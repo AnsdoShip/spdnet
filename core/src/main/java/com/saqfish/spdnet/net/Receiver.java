@@ -84,6 +84,8 @@ public class Receiver {
                 net.socket().off(Events.CHAT);
                 net.socket().off(Events.MOTD);
                 messages = null;
+
+                net.loader().clear();
         }
 
         // Handlers
@@ -93,7 +95,12 @@ public class Receiver {
                 try {
                         Receive.Motd motd = mapper.readValue(json, Receive.Motd.class);
                         NetWindow.motd(motd.motd, motd.seed);
+                        System.out.println("Asset Version: "+motd.assetVersion);
                         net.seed(motd.seed);
+                        if(Settings.asset_version() != motd.assetVersion){
+                                net.loader().downloadAllAssets();
+                                Settings.asset_version(motd.assetVersion);
+                        }
                 } catch (JsonProcessingException e) {
                         e.printStackTrace();
                 }

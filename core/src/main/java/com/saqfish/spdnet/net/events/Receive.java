@@ -31,6 +31,7 @@ public class Receive {
     public static class Motd {
         public String motd;
         public long seed;
+        public long assetVersion;
     }
 
     public static class Transfer {

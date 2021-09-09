@@ -23,6 +23,7 @@ import com.watabou.utils.GameSettings;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static com.saqfish.spdnet.net.Net.DEFAULT_ASSET_VERSION;
 import static com.saqfish.spdnet.net.Net.DEFAULT_HOST;
 import static com.saqfish.spdnet.net.Net.DEFAULT_KEY;
 import static com.saqfish.spdnet.net.Net.DEFAULT_PORT;
@@ -33,6 +34,7 @@ public class Settings extends GameSettings {
     public static final String KEY_ADDRESS = "net_address";
     public static final String KEY_PORT	= "net_port";
     public static final String KEY_AUTH_KEY	= "net_auth_key";
+    public static final String KEY_ASSET_VERSION = "net_asset_version";
 
     public static void scheme( String value ) {
         put( KEY_AUTHORITY, value );
@@ -55,6 +57,9 @@ public class Settings extends GameSettings {
 
     public static void auth_key( String value ) { put( KEY_AUTH_KEY, value ); }
     public static String auth_key() { return getString(KEY_AUTH_KEY, DEFAULT_KEY); }
+
+    public static void asset_version( long value ) { put( KEY_ASSET_VERSION, value ); }
+    public static long asset_version() { return getLong(KEY_ASSET_VERSION, DEFAULT_ASSET_VERSION); }
 
     public static void setDefault(){
         scheme(DEFAULT_SCHEME);

@@ -30,6 +30,10 @@ public class WndMessage extends NetWindow {
 
 	private static final int MARGIN 		= 2;
 
+	private IconTitle icon;
+	private RenderedTextBlock title;
+	private RenderedTextBlock message;
+
 	public WndMessage(Image icon, String title, String message) {
 		super();
 
@@ -37,11 +41,11 @@ public class WndMessage extends NetWindow {
 
 		float pos = 0;
 		if (title != null) {
-			IconTitle tfTitle = new IconTitle(icon, title);
-			tfTitle.setRect(0, pos, width, 0);
-			add(tfTitle);
+			this.icon = new IconTitle(icon, title);
+			this.icon.setRect(0, pos, width, 0);
+			add(this.icon);
 
-			pos = tfTitle.bottom() + 2*MARGIN;
+			pos = this.icon.bottom() + 2*MARGIN;
 		}
 
 		layoutBody(pos, message);
@@ -54,13 +58,13 @@ public class WndMessage extends NetWindow {
 
 		float pos = MARGIN;
 		if (title != null) {
-			RenderedTextBlock tfTitle = PixelScene.renderTextBlock(title, 9);
-			tfTitle.hardlight(TITLE_COLOR);
-			tfTitle.setPos(MARGIN, pos);
-			tfTitle.maxWidth(width - MARGIN * 2);
-			add(tfTitle);
+			this.title = PixelScene.renderTextBlock(title, 9);
+			this.title.hardlight(TITLE_COLOR);
+			this.title.setPos(MARGIN, pos);
+			this.title.maxWidth(width - MARGIN * 2);
+			add(this.title);
 
-			pos = tfTitle.bottom() + 2*MARGIN;
+			pos = this.title.bottom() + 2*MARGIN;
 		}
 		
 		layoutBody(pos, message);
@@ -69,14 +73,18 @@ public class WndMessage extends NetWindow {
 	private void layoutBody(float pos, String message){
 		int width = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
 
-		RenderedTextBlock tfMesage = PixelScene.renderTextBlock( 6 );
-		tfMesage.text(message, width);
-		tfMesage.setPos( 0, pos );
-		add( tfMesage );
+		this.message = PixelScene.renderTextBlock( 6 );
+		this.message.text(message, width);
+		this.message.setPos( 0, pos );
+		add( this.message );
 
-		pos = tfMesage.bottom() + 2*MARGIN;
+		pos = this.message.bottom() + 2*MARGIN;
 
 		resize( width, (int)(pos - MARGIN) );
+	}
+
+	public void setMessage(String message){
+		this.message.text(message);
 	}
 
 	protected boolean enabled( int index ){

@@ -120,7 +120,6 @@ public class ShatteredPixelDungeon extends Game {
 				com.saqfish.spdnet.items.KingsCrown.class,
 				"com.saqfish.spdnet.items.ArmorKit" );
 
-		net = new Net();
 
 
 	}
@@ -139,6 +138,7 @@ public class ShatteredPixelDungeon extends Game {
 
 		Sample.INSTANCE.load( Assets.Sounds.all );
 
+		net = new Net();
 	}
 
 	@Override

@@ -17,8 +17,17 @@
  */
 
 package com.saqfish.spdnet.net;
+import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.zip.Deflater;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.net.events.Events;
@@ -36,6 +45,7 @@ import io.socket.engineio.client.EngineIOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.FileUtils;
 
 import org.json.JSONObject;
 
@@ -46,11 +56,13 @@ public class Net {
     public static String DEFAULT_HOST = "saqfish.com";
     public static int DEFAULT_PORT = 5800;
     public static String DEFAULT_KEY = "new";
+    public static long DEFAULT_ASSET_VERSION = 0;
 
     private Socket socket;
     private Receiver receiver;
     private Sender sender;
     private ObjectMapper mapper;
+    private Loader loader;
     private long seed;
 
     private NetWindow w;
@@ -90,6 +102,7 @@ public class Net {
                 .build();
         socket = IO.socket(url, options);
         mapper = new ObjectMapper();
+        loader = new Loader();
         receiver = new Receiver(this, mapper);
         sender = new Sender(this, mapper);
         setupEvents();
@@ -166,6 +179,7 @@ public class Net {
         sender = null;
     }
 
+
     public void seed(long seed) { this.seed = seed; }
     public long seed() { return this.seed; }
 
@@ -174,5 +188,6 @@ public class Net {
     public ObjectMapper mapper() { return this.mapper;}
     public Sender sender() { return sender; }
     public Receiver reciever() { return receiver; }
+    public Loader loader() { return loader; }
     public URI uri(){ return Settings.uri(); }
 }

@@ -21,7 +21,9 @@
 
 package com.watabou.utils;
 
+
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -41,7 +43,11 @@ public class FileUtils {
 		defaultFileType = type;
 		defaultPath = path;
 	}
-	
+
+	public static String getDefaultPath( ){
+		return defaultPath;
+	}
+
 	public static FileHandle getFileHandle( String name ){
 		return getFileHandle( defaultFileType, defaultPath, name );
 	}
@@ -71,6 +77,11 @@ public class FileUtils {
 	
 	public static boolean fileExists( String name ){
 		FileHandle file = getFileHandle( name );
+		return file.exists() && !file.isDirectory();
+	}
+
+	public static boolean externalFileExists( String name ){
+		FileHandle file = Gdx.files.external( name );
 		return file.exists() && !file.isDirectory();
 	}
 	

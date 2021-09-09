@@ -71,7 +71,7 @@ public class WndMotd extends NetWindow {
 		seedText.setPos(0, pos);
 		add(seedText);
 
-		BlueButton okayBtn = new BlueButton("Play"){
+		BlueButton playBtn = new BlueButton("Play"){
 			@Override
 			protected void onClick() {
 				super.onClick();
@@ -88,10 +88,10 @@ public class WndMotd extends NetWindow {
 			}
 		};
 
-		okayBtn.setRect(width-30, pos, 30, 20);
-		add(okayBtn);
+		playBtn.setRect(width-30, pos, 30, 20);
+		add(playBtn);
 
-		pos = okayBtn.bottom() + 2*MARGIN;
+		pos = playBtn.bottom() + 2*MARGIN;
 
 		resize( width, (int)(pos - MARGIN) );
 	}
