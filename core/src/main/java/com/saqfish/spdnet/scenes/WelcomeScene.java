@@ -163,7 +163,7 @@ public class WelcomeScene extends PixelScene {
 				//TODO: change the messages here in accordance with the type of patch.
 				message = "SPDNet has been patched!";
 				message += "\n";
-				message += "1.0.3 applied\n" ;
+				message += "Server-side assets added\n" ;
 			}
 		} else {
 			message = Messages.get(this, "what_msg");
