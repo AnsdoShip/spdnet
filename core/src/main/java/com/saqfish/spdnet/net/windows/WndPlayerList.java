@@ -90,19 +90,21 @@ public class WndPlayerList extends NetWindow {
 
 			Receive.Player player = p.list[i];
 
-			PlayerRank playerRank = new PlayerRank(player, i+1){
-				@Override
-				protected void onClick() {
-					if(player.depth != null)
-						runWindow(new WndInfoPlayer(player));
-				}
-			};
-			playerRank.setSize( width, 12 );
-			playerRank.setPos( xpos, ypos);
+			if(player.role != Roles.BOT) {
+				PlayerEntry playerRank = new PlayerEntry(player, i + 1) {
+					@Override
+					protected void onClick() {
+						if (player.depth != null)
+							runWindow(new WndInfoPlayer(player));
+					}
+				};
+				playerRank.setSize(width, 12);
+				playerRank.setPos(xpos, ypos);
 
-			content.add( playerRank );
+				content.add(playerRank);
 
-			ypos=playerRank.bottom();
+				ypos = playerRank.bottom();
+			}
 
 		}
 
@@ -114,20 +116,19 @@ public class WndPlayerList extends NetWindow {
 		resize(width, (int)y);
 	}
 
-	public static class PlayerRank extends Button {
+	public static class PlayerEntry extends Button {
 		private int order;
 		private RenderedTextBlock nick;
 
 		private boolean enabled;
 
 
-		public PlayerRank(Receive.Player player, int order){
+		public PlayerEntry(Receive.Player player, int order){
 			this.order = order;
 			this.enabled = player.depth != null;
 
-			nick = PixelScene.renderTextBlock(player.nick, 11);
 			int color = getRoleColor(player.role);
-			System.out.println(player.nick + " - " + player.role + "color: " + color);
+			nick = PixelScene.renderTextBlock(player.nick, 11);
 			nick.hardlight(color);
 			add(nick);
 		}
@@ -154,16 +155,10 @@ public class WndPlayerList extends NetWindow {
 		}
 	}
 
-	protected boolean enabled( int index ){
-		return true;
-	}
-
-	protected void onSelect( int index ) {}
-
 	public static int getRoleColor(int role){
 		switch (role){
 			case Roles.BOT:
-			    return 0xFFFF00;
+				return 0xFFFF00;
 			case Roles.ADMIN:
 				return 0x00FF00;
 			case Roles.PLAYER:
@@ -171,4 +166,12 @@ public class WndPlayerList extends NetWindow {
 		}
 		return 0xFFFFFF;
 	}
+
+	protected boolean enabled( int index ){
+		return true;
+	}
+
+	protected void onSelect( int index ) {}
+
+
 }
