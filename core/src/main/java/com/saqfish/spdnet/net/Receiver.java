@@ -66,14 +66,14 @@ public class Receiver {
                         String message = (String) args[2];
                         handleChat(id, nick, message);
                 };
-                Emitter.Listener onMotd = args -> {
+                Emitter.Listener onInit = args -> {
                         String data = (String) args[0];
-                        handleMotd(data);
+                        handleInit(data);
                 };
                 net.socket().on(Events.ACTION, onAction);
                 net.socket().on(Events.TRANSFER, onTransfer);
                 net.socket().on(Events.CHAT, onChat);
-                net.socket().once(Events.MOTD, onMotd);
+                net.socket().once(Events.INIT, onInit);
                 messages = new ArrayList<>();
         }
 
@@ -82,7 +82,7 @@ public class Receiver {
                 net.socket().off(Events.ACTION);
                 net.socket().off(Events.TRANSFER);
                 net.socket().off(Events.CHAT);
-                net.socket().off(Events.MOTD);
+                net.socket().off(Events.INIT);
                 messages = null;
 
                 net.loader().clear();
@@ -90,16 +90,16 @@ public class Receiver {
 
         // Handlers
 
-        // MOTD & seed handler
-        public void handleMotd(String json) {
+        // Handle init
+        public void handleInit(String json) {
                 try {
-                        Receive.Motd motd = mapper.readValue(json, Receive.Motd.class);
-                        NetWindow.motd(motd.motd, motd.seed);
-                        System.out.println("Asset Version: "+motd.assetVersion);
-                        net.seed(motd.seed);
-                        if(Settings.asset_version() != motd.assetVersion){
+                        Receive.Init init = mapper.readValue(json, Receive.Init.class);
+                        NetWindow.init(init.motd, init.seed);
+                        net.seed(init.seed);
+                        DeviceCompat.log("ASSET", Long.toString(init.assetVersion));
+                        if(Settings.asset_version() != init.assetVersion){
                                 net.loader().downloadAllAssets();
-                                Settings.asset_version(motd.assetVersion);
+                                Settings.asset_version(init.assetVersion);
                         }
                 } catch (JsonProcessingException e) {
                         e.printStackTrace();

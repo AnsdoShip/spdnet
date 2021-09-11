@@ -21,7 +21,6 @@ package com.saqfish.spdnet.net;
 import com.watabou.utils.GameSettings;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import static com.saqfish.spdnet.net.Net.DEFAULT_ASSET_VERSION;
 import static com.saqfish.spdnet.net.Net.DEFAULT_HOST;
@@ -68,6 +67,14 @@ public class Settings extends GameSettings {
         auth_key(DEFAULT_KEY);
     }
 
+    public static String defaultStringUri(){
+       return defaultUri().toString();
+    }
+
+    public static URI defaultUri(){
+        return URI.create(DEFAULT_SCHEME+"://"+DEFAULT_HOST+":"+DEFAULT_PORT);
+    }
+
     public static URI uri() {
         String scheme = scheme();
         String address = address();
@@ -77,7 +84,7 @@ public class Settings extends GameSettings {
         } catch (Exception ignored) {
 
         }
-        return URI.create(DEFAULT_SCHEME+"://"+DEFAULT_HOST+":"+DEFAULT_PORT);
+        return defaultUri();
     }
 
 

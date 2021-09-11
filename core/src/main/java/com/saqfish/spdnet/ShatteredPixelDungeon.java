@@ -22,6 +22,7 @@
 package com.saqfish.spdnet;
 
 import com.saqfish.spdnet.net.Net;
+import com.saqfish.spdnet.net.Settings;
 import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.scenes.PixelScene;
 import com.saqfish.spdnet.scenes.TitleScene;
@@ -138,7 +139,9 @@ public class ShatteredPixelDungeon extends Game {
 
 		Sample.INSTANCE.load( Assets.Sounds.all );
 
-		net = new Net();
+		net = DeviceCompat.isDesktop() && DeviceCompat.isDebug() ?
+				new Net("http://127.0.0.1:5800"):
+				new Net(Settings.defaultStringUri());
 	}
 
 	@Override
@@ -204,7 +207,6 @@ public class ShatteredPixelDungeon extends Game {
 		super.destroy();
 		GameScene.endActorThread();
 		net.die();
-
 	}
 
 	public void updateDisplaySize(){

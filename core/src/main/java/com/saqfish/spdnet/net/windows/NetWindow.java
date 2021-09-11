@@ -89,7 +89,7 @@ public class NetWindow extends Window {
         }));
     }
 
-    public static void motd(String motd, long seed){
+    public static void init(String motd, long seed){
         Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndMotd(motd,seed)));
     }
 

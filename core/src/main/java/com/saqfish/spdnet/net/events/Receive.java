@@ -28,7 +28,7 @@ public class Receive {
     public static final int ITEM = 4;
     public static final int GLOG = 5;
 
-    public static class Motd {
+    public static class Init {
         public String motd;
         public long seed;
         public long assetVersion;

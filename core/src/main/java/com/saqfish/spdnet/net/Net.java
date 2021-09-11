@@ -17,17 +17,8 @@
  */
 
 package com.saqfish.spdnet.net;
-import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.zip.Deflater;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.net.events.Events;
@@ -38,25 +29,23 @@ import com.saqfish.spdnet.scenes.GameScene;
 import com.watabou.noosa.Game;
 
 import io.socket.client.IO;
-import io.socket.client.Manager;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import io.socket.engineio.client.EngineIOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.watabou.utils.DeviceCompat;
-import com.watabou.utils.FileUtils;
 
 import org.json.JSONObject;
 
 import static java.util.Collections.singletonMap;
 
 public class Net {
-    public static String DEFAULT_SCHEME = "http";
     public static String DEFAULT_HOST = "saqfish.com";
-    public static int DEFAULT_PORT = 5800;
-    public static String DEFAULT_KEY = "new";
+    public static String DEFAULT_SCHEME = "http";
+    public static String DEFAULT_KEY = "debug";
     public static long DEFAULT_ASSET_VERSION = 0;
+    public static int DEFAULT_PORT = 5800;
 
     private Socket socket;
     private Receiver receiver;
@@ -76,16 +65,12 @@ public class Net {
         session();
     }
 
-    public Net(String key){
-        Settings.address(DEFAULT_HOST);
-        Settings.port(DEFAULT_PORT);
-        Settings.auth_key(key);
+    public Net(String address){
+        this(address, DEFAULT_KEY);
         session();
     }
 
     public Net(){
-        Settings.address(DEFAULT_HOST);
-        Settings.port(DEFAULT_PORT);
         session();
     }
 
@@ -96,6 +81,7 @@ public class Net {
     public void session(){
         URI url = Settings.uri();
         String key = Settings.auth_key();
+        DeviceCompat.log("URL", url.toString());
         IO.Options options = IO.Options.builder()
                 .setAuth(singletonMap("token", key))
                 .setQuery("version="+Game.versionCode)
