@@ -152,12 +152,6 @@ public class TitleScene extends PixelScene {
 			protected void onClick() {
 				NetWindow.showServerInfo();
 			}
-
-			@Override
-			protected boolean onLongClick() {
-			    NetWindow.showKeyInput();
-				return true;
-			}
 		};
 
 		btnConnection.icon(NetIcons.get(NetIcons.GLOBE));

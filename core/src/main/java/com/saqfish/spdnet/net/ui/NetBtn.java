@@ -40,12 +40,7 @@ public class NetBtn extends StyledButton {
     public NetBtn() {
         super(Chrome.Type.GREY_BUTTON_TR, "");
         icon(NetIcons.get(NetIcons.GLOBE));
-    }
-
-    @Override
-    public void update() {
-        super.update();
-        icon.brightness(instance.net.connected() ? 0.8f : 0.2f );
+        icon.brightness(0.6f);
     }
 
     @Override

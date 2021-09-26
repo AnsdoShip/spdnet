@@ -21,8 +21,10 @@ package com.saqfish.spdnet.net.windows;
 import com.saqfish.spdnet.net.Settings;
 import com.saqfish.spdnet.net.ui.BlueButton;
 import com.saqfish.spdnet.net.ui.LabeledText;
+import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.scenes.PixelScene;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
+import com.saqfish.spdnet.windows.IconTitle;
 import com.watabou.noosa.ColorBlock;
 
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
@@ -30,18 +32,19 @@ import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
 public class WndServerInfo extends NetWindow {
     private static final int WIDTH_P	    = 122;
     private static final int WIDTH_L	    = 223;
+    private static final int BTN_HEIGHT	    = 18;
 
     private static final float GAP          = 2;
 
-    RenderedTextBlock title;
-    ColorBlock sep1;
-    LabeledText type;
-    LabeledText host;
-    LabeledText port;
-    LabeledText status;
+    IconTitle title;
+    RenderedTextBlock host;
+    RenderedTextBlock status;
+    BlueButton keyBtn;
     BlueButton connectBtn;
 
     WndServerInfo self = this;
+
+    int zoom = PixelScene.defaultZoom;
 
     public WndServerInfo() {
         super();
@@ -49,35 +52,53 @@ public class WndServerInfo extends NetWindow {
         int height, y = 0;
 
         int maxWidth = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
-        int maxBtnHeight = PixelScene.landscape() ? 18: 14;
-        int maxTitleHeight =  PixelScene.landscape() ? 12: 9;
-        String maxTitleText = PixelScene.landscape() ? "Server Info": "Server";
 
-        title = PixelScene.renderTextBlock(maxTitleText, maxTitleHeight);
-        title.hardlight(TITLE_COLOR);
+        title = new IconTitle(NetIcons.get(NetIcons.GLOBE), "Server Connection");
+        title.setRect(0, 0, maxWidth, 20);
         add(title);
 
-        sep1 = new ColorBlock(1, 1, 0xFF000000);
-        add(sep1);
+        float bottom = y;
+        bottom = title.bottom();
 
-        type = new LabeledText("Type", Settings.uri().getScheme());
-        add(type);
-
-        host = new LabeledText("Host", Settings.uri().getHost());
+        host = PixelScene.renderTextBlock("Host: " +Settings.uri().toString(), 9);
+        host.maxWidth(maxWidth);
+        host.setPos(0, bottom + GAP);
         add(host);
 
-        port = new LabeledText("Port", String.valueOf(Settings.uri().getPort()));
-        add(port);
+        bottom = host.bottom() + GAP;
 
+        status = new RenderedTextBlock(net().connected() ? "Connected" : "Disconnected", 9*zoom){
+            @Override
+            public synchronized void update() {
+                super.update();
+                text(net().connected() ? "Connected" : "Disconnected");
+                hardlight(net().connected() ? 0x00FF00 : 0xFF0000);
+            }
+        };
 
+        status.zoom(1/(float)zoom);
+        status.setRect(0, bottom + GAP, maxWidth, 20);
+        add(status);
 
+        bottom = status.bottom() + (GAP*3);
+
+        keyBtn = new BlueButton("Set Key") {
+            @Override
+            protected void onClick() {
+                NetWindow.showKeyInput();
+            }
+        };
+        add(keyBtn);
+        keyBtn.setSize(maxWidth/2, BTN_HEIGHT);
+        keyBtn.setPos(0, bottom);
+
+        float finalBottom = bottom;
         connectBtn = new BlueButton("Connect") {
             @Override
             public synchronized void update() {
                 super.update();
                 text.text(net().connected() ? "Disconnect" : "Connect");
-                setSize(net().connected() ? 50 : 40, maxBtnHeight);
-                setPos(maxWidth - connectBtn.width(), 0);
+                connectBtn.setRect(keyBtn.right(), finalBottom, maxWidth/2 , BTN_HEIGHT);
             }
 
             @Override
@@ -87,49 +108,11 @@ public class WndServerInfo extends NetWindow {
             }
         };
         add(connectBtn);
-        status = new LabeledText("Status", net().connected() ? "Connected" : "Disconnected") {
-            @Override
-            public synchronized void update() {
-                super.update();
-                text().text(net().connected() ? "Connected" : "Disconnected");
-                text().hardlight(net().connected() ? 0x00FF00 : 0xFF0000);
-            }
-        };
-        add(status);
+        connectBtn.setSize(maxWidth/2, BTN_HEIGHT);
+        connectBtn.setPos(keyBtn.right(), bottom);
 
+        height = (int) (connectBtn.bottom() + GAP/2);
 
-        float bottom = y;
-
-        title.setPos(GAP, (PixelScene.landscape() ? 1: 2));
-        connectBtn.setSize(40, maxBtnHeight);
-        connectBtn.setPos(maxWidth- connectBtn.width(), 0);
-
-        sep1.size(maxWidth, 1);
-        sep1.y = connectBtn.bottom() + GAP;
-
-        bottom = sep1.y + 1;
-
-        float right = 0;
-
-        type.setPos(right, bottom + GAP);
-        bottom = type.bottom() + GAP;
-
-        host.setPos(right + host.width(), bottom + GAP);
-        bottom = host.bottom() + GAP;
-
-        port.setPos(right + port.width(), bottom + GAP);
-        bottom = port.bottom() + GAP;
-
-        right = 0;
-
-        status.setPos(right, bottom + GAP);
-
-        height = (int) (status.bottom() + 4 * GAP);
-
-       resize(maxWidth, height);
+        resize(maxWidth, height);
     }
-
-
 }
-
-
