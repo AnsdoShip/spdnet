@@ -100,4 +100,9 @@ public class NetWindow extends Window {
     public static void showRanking(JSONObject recordsData){
         Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndNetRanking(recordsData)));
     }
+
+    public static void show(Window w){
+        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(w));
+    }
+
 }

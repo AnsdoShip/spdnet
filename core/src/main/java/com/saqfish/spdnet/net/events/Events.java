@@ -27,6 +27,7 @@ public class Events {
     public static final String RECORDS = "records";
 
     public static class Error{
-        public String message;
+        public int type;
+        public String data;
     }
 }

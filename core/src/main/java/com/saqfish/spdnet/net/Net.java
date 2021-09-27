@@ -21,11 +21,17 @@ import java.net.URI;
 
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Send;
 import com.saqfish.spdnet.net.windows.NetWindow;
+import com.saqfish.spdnet.net.windows.WndNetOptions;
 import com.saqfish.spdnet.net.windows.WndServerInfo;
+import com.saqfish.spdnet.scenes.ChangesScene;
 import com.saqfish.spdnet.scenes.GameScene;
+import com.saqfish.spdnet.services.updates.Updates;
+import com.saqfish.spdnet.ui.Icons;
+import com.saqfish.spdnet.windows.WndOptions;
 import com.watabou.noosa.Game;
 
 import io.socket.client.IO;
@@ -110,19 +116,22 @@ public class Net {
         // TODO: Clean this up or handle errors better
         Emitter.Listener onConnectionError = args -> {
             try {
-                JSONObject json = (JSONObject)args[0];
-                Events.Error e = mapper().readValue(json.toString(), Events.Error.class);
-                NetWindow.error(e.message);
+                JSONObject data = (JSONObject)args[0];
+                String json = data.getString("message");
+                Events.Error e = mapper().readValue(json, Events.Error.class);
+                if(e.type == 1){
+                    NetWindow.message(Icons.get(Icons.CHANGES), "Update required", e.data);
+                }else NetWindow.error(e.data);
             }catch(ClassCastException ce){
                 try {
                     EngineIOException err = (EngineIOException) args[0];
                     NetWindow.error(err.getMessage());
-                    err.getStackTrace();
                     System.out.println(err.getLocalizedMessage());
                 }catch (Exception eignored) {
                     NetWindow.error("Connection could not be established!");
                 }
             }catch(Exception ignored) {
+                ignored.printStackTrace();
                 NetWindow.error("Connection could not be established!");
             }
             receiver.cancelAll();
