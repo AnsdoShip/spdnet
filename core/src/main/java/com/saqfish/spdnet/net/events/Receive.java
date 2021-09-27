@@ -61,6 +61,7 @@ public class Receive {
         public Integer depth;
         public NetItems items;
         public Integer role;
+        public String id;
     }
 
     public static class PlayerList {
