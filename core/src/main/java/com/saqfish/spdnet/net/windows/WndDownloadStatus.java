@@ -10,6 +10,7 @@ import com.saqfish.spdnet.ui.RenderedTextBlock;
 import com.saqfish.spdnet.ui.ScrollPane;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.DeviceCompat;
 
 public class WndDownloadStatus extends NetWindow {
 
@@ -27,9 +28,6 @@ public class WndDownloadStatus extends NetWindow {
     private BlueButton reloadBtn;
 
     private float lastY;
-
-    private int failures;
-    private int successes;
 
     private WndDownloadStatus w = this;
 
@@ -50,7 +48,7 @@ public class WndDownloadStatus extends NetWindow {
 
         y = height - 20;
 
-        reloadBtn = new BlueButton("Play"){
+        reloadBtn = new BlueButton("Reload"){
             @Override
             protected void onClick() {
                 super.onClick();
@@ -67,27 +65,26 @@ public class WndDownloadStatus extends NetWindow {
                 }
             }
         };
+        reloadBtn.enable(false);
         add(reloadBtn);
         reloadBtn.setRect(width-40, y, 40, 20);
 
         list.setRect(0, pane.top(), width, y);
         pane.setRect( 0, 0, width, y);
 
-        success = new StatusItem("Success: ");
+        success = new StatusItem("Updated: ");
         success.setRect(0, y+2, width, 12);
         add(success);
 
         y += success.height();
 
-        fail = new StatusItem("Fail: ");
+        fail = new StatusItem("Default: ");
         fail.setRect(0, y, width, 12);
         add(fail);
 
-
-
     }
 
-    public void addFile(String str, boolean succeeded){
+    public void addFile(String str, boolean succeeded, int count){
         String[] split = str.split("/");
         String filename = split[split.length-1];
 
@@ -95,15 +92,11 @@ public class WndDownloadStatus extends NetWindow {
 
         if(succeeded) {
             color = SUCCESS;
-            successes++;
+            success.setCount(count);
         }else{
             color = FAIL;
-            failures++;
+            fail.setCount(count);
         }
-
-
-        fail.setCount(failures);
-        success.setCount(successes);
 
         RenderedTextBlock entry = PixelScene.renderTextBlock(filename, 9);
         entry.hardlight(color);
@@ -118,13 +111,15 @@ public class WndDownloadStatus extends NetWindow {
         if (list.bottom() > pane.height())
             pane.scrollTo(0, list.bottom() - pane.height() + 2);
 
+    }
 
+    public void complete(boolean status){
+        reloadBtn.enable(status);
     }
 
     public static class StatusItem extends Component {
         private RenderedTextBlock label;
         private RenderedTextBlock count;
-
 
         public StatusItem(String name){
             label = PixelScene.renderTextBlock(name, 9);
@@ -134,7 +129,6 @@ public class WndDownloadStatus extends NetWindow {
             add(count);
 
         }
-
 
         @Override
         protected void layout() {
