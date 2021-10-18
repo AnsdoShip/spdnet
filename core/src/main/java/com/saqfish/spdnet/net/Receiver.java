@@ -70,10 +70,22 @@ public class Receiver {
                         String data = (String) args[0];
                         handleInit(data);
                 };
+                Emitter.Listener onLeave= args -> {
+                        String nick = (String) args[0];
+                        String id = (String) args[1];
+                        handleLeaveJoin(true, nick);
+                };
+                Emitter.Listener onJoin = args -> {
+                        String nick = (String) args[0];
+                        String id = (String) args[1];
+                        handleLeaveJoin(false, nick);
+                };
+                net.socket().once(Events.INIT, onInit);
                 net.socket().on(Events.ACTION, onAction);
                 net.socket().on(Events.TRANSFER, onTransfer);
                 net.socket().on(Events.CHAT, onChat);
-                net.socket().once(Events.INIT, onInit);
+                net.socket().on(Events.LEAVE, onLeave);
+                net.socket().on(Events.JOIN, onJoin);
                 messages = new ArrayList<>();
         }
 
@@ -104,6 +116,11 @@ public class Receiver {
                 } catch (JsonProcessingException e) {
                         e.printStackTrace();
                 }
+        }
+
+        // Leave/Join
+        public void handleLeaveJoin(boolean isLeaving,  String nick) {
+                GLog.p(nick + " has " + (isLeaving? "left": "joined"));
         }
 
         // Action handler
@@ -156,6 +173,7 @@ public class Receiver {
                         item.level(i.level);
                         if(i.identified) item.identify();
 
+                        item.quantity(i.count);
                         item.doPickUp(Dungeon.hero);
                         GameScene.pickUp(item, Dungeon.hero.pos);
 
