@@ -38,6 +38,7 @@ public class Receive {
         public String id;
         public String className;
         public int level;
+        public int count;
         public boolean cursed;
         public boolean identified;
     }
