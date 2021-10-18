@@ -15,8 +15,8 @@ allprojects {
         appName = 'SPDNet'
         appPackageName = 'com.saqfish.spdnet'
 
-        appVersionCode = 573
-        appVersionName = '1.0.3-alpha-7.3'
+        appVersionCode = 574
+        appVersionName = '1.0.3-alpha-7.4'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
