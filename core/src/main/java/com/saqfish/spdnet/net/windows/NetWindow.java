@@ -21,6 +21,7 @@ package com.saqfish.spdnet.net.windows;
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
 
 import com.saqfish.spdnet.ShatteredPixelDungeon;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.Settings;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.ui.NetIcons;
@@ -54,7 +55,7 @@ public class NetWindow extends Window {
     }
 
     public static void error(String message){
-        message(NetIcons.get(NetIcons.ALERT), "Connection Error", message);
+        message(NetIcons.get(NetIcons.ALERT), "Connection Error", message + "\n\n"+Messages.get(NetWindow.class,"info"));
     }
 
     public static void error(String title, String message){

@@ -140,7 +140,7 @@ public class ShatteredPixelDungeon extends Game {
 		Sample.INSTANCE.load( Assets.Sounds.all );
 
 		net = DeviceCompat.isDesktop() && DeviceCompat.isDebug() ?
-				new Net("http://127.0.0.1:5800"):
+				new Net(Settings.defaultStringUri(), Settings.auth_key()):
 				new Net(Settings.defaultStringUri(), Settings.auth_key());
 	}
 

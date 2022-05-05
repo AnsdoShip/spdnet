@@ -17,41 +17,36 @@
  */
 
 package com.saqfish.spdnet.net;
-import java.net.URI;
 
+import static java.util.Collections.singletonMap;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
-import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Send;
 import com.saqfish.spdnet.net.windows.NetWindow;
-import com.saqfish.spdnet.net.windows.WndNetOptions;
 import com.saqfish.spdnet.net.windows.WndServerInfo;
-import com.saqfish.spdnet.scenes.ChangesScene;
 import com.saqfish.spdnet.scenes.GameScene;
-import com.saqfish.spdnet.services.updates.Updates;
 import com.saqfish.spdnet.ui.Icons;
-import com.saqfish.spdnet.windows.WndOptions;
 import com.watabou.noosa.Game;
+import com.watabou.utils.DeviceCompat;
+
+import org.json.JSONObject;
+
+import java.net.URI;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import io.socket.engineio.client.EngineIOException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.watabou.utils.DeviceCompat;
-
-import org.json.JSONObject;
-
-import static java.util.Collections.singletonMap;
-
 public class Net {
-    public static String DEFAULT_HOST = "saqfish.com";
+    public static String DEFAULT_HOST = "cn-zz-s1-b.miaovps.com";
     public static String DEFAULT_SCHEME = "http";
     public static String DEFAULT_KEY = "debug";
     public static long DEFAULT_ASSET_VERSION = 0;
-    public static int DEFAULT_PORT = 5800;
+    public static int DEFAULT_PORT = 23456;
 
     private Socket socket;
     private Receiver receiver;
@@ -119,7 +114,7 @@ public class Net {
                 JSONObject data = (JSONObject)args[0];
                 String json = data.getString("message");
                 Events.Error e = mapper().readValue(json, Events.Error.class);
-                if(e.type == 1){
+                if(e.type != 1){
                     NetWindow.message(Icons.get(Icons.CHANGES), "Update required", e.data);
                 }else NetWindow.error(e.data);
             }catch(ClassCastException ce){
@@ -127,6 +122,7 @@ public class Net {
                     EngineIOException err = (EngineIOException) args[0];
                     NetWindow.error(err.getMessage());
                     System.out.println(err.getLocalizedMessage());
+                    ((Throwable) err).printStackTrace();
                 }catch (Exception eignored) {
                     NetWindow.error("Connection could not be established!");
                 }

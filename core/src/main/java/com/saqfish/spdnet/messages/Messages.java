@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.SPDSettings;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
+import com.saqfish.spdnet.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,6 @@ import java.util.Locale;
 
 /*
 	Simple wrapper class for libGDX I18NBundles.
-
 	The core idea here is that each string resource's key is a combination of the class definition and a local value.
 	An object or static method would usually call this with an object/class reference (usually its own) and a local key.
 	This means that an object can just ask for "name" rather than, say, "items.weapon.enchantments.death.name"
@@ -98,26 +98,37 @@ public class Messages {
 		return get(o.getClass(), k, args);
 	}
 
-	public static String get(Class c, String k, Object...args){
+	public static String get(Class c, String k, Object...args) {
+		return get(c, k, null, args);
+	}
+
+	private static String get(Class c, String k, String baseName, Object...args){
 		String key;
 		if (c != null){
-			key = c.getName().replace("com.saqfish.spdnet.", "");
+			key = c.getName();
+			key = key.replace("com.saqfish.spdnet.", "");
 			key += "." + k;
 		} else
 			key = k;
 
-		String value = getFromBundle(key.toLowerCase(Locale.ENGLISH));
+		String value = getFromBundle(key.toLowerCase(Locale.CHINESE));
 		if (value != null){
 			if (args.length > 0) return format(value, args);
 			else return value;
-		} else {
+		}  else {
+			//Use baseName so the missing string is clear what exactly needs replacing. Otherwise, it just says java.lang.Object.[key]
+			if (baseName == null) {
+				baseName = key;
+			}
 			//this is so child classes can inherit properties from their parents.
 			//in cases where text is commonly grabbed as a utility from classes that aren't mean to be instantiated
 			//(e.g. flavourbuff.dispTurns()) using .class directly is probably smarter to prevent unnecessary recursive calls.
 			if (c != null && c.getSuperclass() != null){
-				return get(c.getSuperclass(), k, args);
+				return get(c.getSuperclass(), k, baseName, args);
 			} else {
-				return "!!!NO TEXT FOUND!!!";
+				String name = "Ms: "+baseName;
+				GLog.w(name);
+				return name;
 			}
 		}
 	}
@@ -142,16 +153,18 @@ public class Messages {
 
 	public static String format( String format, Object...args ) {
 		try {
-			return String.format(Locale.ENGLISH, format, args);
+			return String.format(Locale.CHINESE, format, args);
 		} catch (IllegalFormatException e) {
 			ShatteredPixelDungeon.reportException( e );
 			return format;
 		}
 	}
 
-	public static String capitalize( String str ){
-		if (str.length() == 0)  return str;
-		else                    return Character.toTitleCase( str.charAt( 0 ) ) + str.substring( 1 );
+	public static String capitalize(String str) {
+		if (str.length() == 0) {
+			return str;
+		}
+		return Character.toTitleCase(str.charAt(0)) + str.substring(1);
 	}
 
 	//Words which should not be capitalized in title case, mostly prepositions which appear ingame
@@ -165,11 +178,11 @@ public class Messages {
 
 	public static String titleCase( String str ){
 		//English capitalizes every word except for a few exceptions
-		if (lang == Languages.ENGLISH){
+		if (lang == Languages.CHINESE){
 			String result = "";
 			//split by any unicode space character
 			for (String word : str.split("(?<=\\p{Zs})")){
-				if (noCaps.contains(word.trim().toLowerCase(Locale.ENGLISH).replaceAll(":|[0-9]", ""))){
+				if (noCaps.contains(word.trim().toLowerCase(Locale.CHINESE).replaceAll(":|[0-9]", ""))){
 					result += word;
 				} else {
 					result += capitalize(word);
