@@ -43,9 +43,11 @@ public class LabeledText extends Component {
     public LabeledText(String label, String text){
         this.labelText = label;
         this.textText = text;
-        this.labelSize = 9;
-        this.textSize = 9;
+        this.labelSize = 4;
+        this.textSize = 5;
     }
+
+
     @Override
     protected void layout() {
         float bottom = y;

@@ -9,9 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Align;
 import com.saqfish.spdnet.Chrome;
+import com.saqfish.spdnet.messages.Languages;
+import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.net.Net;
 import com.saqfish.spdnet.net.Receiver;
 import com.saqfish.spdnet.net.ui.BlueButton;
 import com.saqfish.spdnet.scenes.PixelScene;
+import com.saqfish.spdnet.scenes.TitleScene;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
 import com.saqfish.spdnet.ui.ScrollPane;
 import com.watabou.noosa.Camera;
@@ -19,15 +23,17 @@ import com.watabou.noosa.TextInput;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.DeviceCompat;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class WndChat extends NetWindow {
 
-	private static final int MARGIN 		= 2;
-	private static final int BUTTON_HEIGHT	= 16;
+	private static final int MARGIN 		= 0;
+	private static final int BUTTON_HEIGHT	= 18;
 
 	public static final float WIDTH_P        = 120;
 	public static final float WIDTH_L        = 300;
 
-	public static final float MSGPADDING = 2;
+	public static final float MSGPADDING = 6;
 
 	private TextInput textInput;
 	private BlueButton sendBtn;
@@ -65,6 +71,11 @@ public class WndChat extends NetWindow {
 		textInput.setRect(0, sendBtn.top(), width-sendBtn.width(), sendBtn.height());
 	}
 
+	public static AtomicBoolean initialized = new AtomicBoolean(false);
+	public static AtomicBoolean check = new AtomicBoolean(false);
+	public static void join() {
+	}
+
 	public class Chat extends Component {
 		public static final float BOXHEIGHT = 100;
 
@@ -78,7 +89,7 @@ public class WndChat extends NetWindow {
 		protected void createChildren() {
 			super.createChildren();
 
-			int textSize = (int)PixelScene.uiCamera.zoom * 8;
+			int textSize = (int)PixelScene.uiCamera.zoom * 5;
 			textInput = new TextInput(Chrome.get(Chrome.Type.TOAST), false, textSize);
 			textInput.setMaxLength(200);
 			textInput.setTextAlignment(Align.left);
@@ -102,7 +113,9 @@ public class WndChat extends NetWindow {
 			content = list.content();
 			content.clear();
 
-			sendBtn = new BlueButton(">") {
+
+
+			sendBtn = new BlueButton(Messages.get(TitleScene.class, "send")) {
 				@Override
 				protected void onClick() {
 					String msg = textInput.getText();
@@ -161,9 +174,9 @@ public class WndChat extends NetWindow {
 	private void addChatMessage(Receiver.ChatMessage message){
 		boolean isSender = message.id.equals(net().socket().id());
 		boolean isMobile = DeviceCompat.isAndroid() || DeviceCompat.isiOS();
-		RenderedTextBlock r = PixelScene.renderTextBlock(isMobile ? 7: 9);
+		RenderedTextBlock r = PixelScene.renderTextBlock(isMobile ? 5: 5);
 
-		String finalNick  = isSender ? "You" :message.nick;
+		String finalNick  = isSender ? message.nick+Messages.get(WndChat.class,"You"):message.nick;
 
 		r.text(finalNick +": "+ message.message, width);
 
@@ -185,7 +198,7 @@ public class WndChat extends NetWindow {
 
 		if(isSender)
 			if(textInput != null) {
-						textInput.setText("");
+				textInput.setText("");
 			}
 	}
 

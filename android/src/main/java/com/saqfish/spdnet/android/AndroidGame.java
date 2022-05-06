@@ -33,6 +33,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
+import com.rohitss.uceh.UCEHandler;
 import com.saqfish.spdnet.SPDSettings;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.services.news.News;
@@ -91,6 +92,8 @@ public class AndroidGame extends AndroidApplication {
 			// this is the default prefs filename given to an android app (.xml is automatically added to it)
 			SPDSettings.set(instance.getPreferences("ShatteredPixelDungeon"));
 
+			UCEHandler.Builder builder = new UCEHandler.Builder(this);
+			builder.build();
 		} else {
 			instance = this;
 		}

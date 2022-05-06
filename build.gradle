@@ -12,10 +12,10 @@ allprojects {
 
     ext {
         appName = 'SPDNet'
-        appPackageName = 'com.saqfish.spdnet'
+        appPackageName = 'com.saqfishling.spdnet'
 
         appVersionCode = 574
-        appVersionName = '1.0.3-alpha-7.5'
+        appVersionName = '1.0.3-Alpha-7.5-SPDNET'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

@@ -51,12 +51,14 @@ public class NetWindow extends Window {
     }
 
     public static void message(String message){
-        message(NetIcons.get(NetIcons.GLOBE), "Server Message", message);
+        message(NetIcons.get(NetIcons.GLOBE), Messages.get(NetWindow.class,"sever_info"), message);
     }
 
     public static void error(String message){
-        message(NetIcons.get(NetIcons.ALERT), "Connection Error", message + "\n\n"+Messages.get(NetWindow.class,"info"));
+        message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"error"),
+                message + "\n\n"+Messages.get(NetWindow.class,"info"));
     }
+
 
     public static void error(String title, String message){
         message(NetIcons.get(NetIcons.ALERT), title, message);
@@ -79,7 +81,9 @@ public class NetWindow extends Window {
     }
 
     public static void showKeyInput(){
-        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput("Enter key", Settings.auth_key(), 30, false, "Set", "Cancel"){
+        Game.runOnRenderThread(() -> ShatteredPixelDungeon.scene().add(new WndTextInput(Messages.get(WndTextInput.class,"enter_key"),
+                Settings.auth_key(), 20,
+                false, Messages.get(WndTextInput.class,"yes"), Messages.get(WndTextInput.class,"no")){
             @Override
             public void onSelect(boolean positive, String text) {
                 if(positive){

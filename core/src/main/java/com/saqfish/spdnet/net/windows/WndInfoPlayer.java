@@ -28,10 +28,12 @@ import com.saqfish.spdnet.items.artifacts.Artifact;
 import com.saqfish.spdnet.items.rings.Ring;
 import com.saqfish.spdnet.net.actor.Player;
 import com.saqfish.spdnet.net.events.Receive;
+import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.scenes.PixelScene;
 import com.saqfish.spdnet.sprites.HeroSprite;
 import com.saqfish.spdnet.sprites.ItemSpriteSheet;
+import com.saqfish.spdnet.ui.Icons;
 import com.saqfish.spdnet.ui.ItemSlot;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
 import com.saqfish.spdnet.windows.WndBag;
@@ -41,6 +43,8 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Reflection;
+
+import javax.swing.Icon;
 
 public class WndInfoPlayer extends NetWindow {
 
@@ -120,17 +124,17 @@ public class WndInfoPlayer extends NetWindow {
 		int x = 0;
 		int y = 0;
 
-		image = HeroSprite.avatar(WndPlayerList.playerClassToHeroClass(playerClass), ((Armor)armor).tier);
+		image = NetIcons.get(NetIcons.NEWS);
 		add( image );
 		image.x = 0;
 		image.y = 0;
 
-		name = PixelScene.renderTextBlock( nick, 9 );
+		name = PixelScene.renderTextBlock( nick, 6 );
 		add( name );
 		name.setPos(x + image.width + VGAP,
 				image.height() > name.height() ? y +(image.height() - name.height()) / 2 : y);
 
-		depth = PixelScene.renderTextBlock( String.valueOf(pdepth), 9 );
+		depth = PixelScene.renderTextBlock( String.valueOf(pdepth), 6 );
 		add( depth );
 
 		sep = new ColorBlock(1, 1, 0xFF000000);

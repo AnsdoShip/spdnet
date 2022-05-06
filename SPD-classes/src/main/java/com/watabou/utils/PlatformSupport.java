@@ -29,12 +29,51 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.watabou.noosa.Game;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/*
+
+		abstract class Role{
+
+			public abstract void STE();
+
+			public abstract void IGE();
+			//
+			public abstract void STE(int dmg);
+
+			public abstract void IGE(int ige);
+		}
+
+		public abstract boolean attack();
+
+		abstract class Mage extends Role{
+			//
+			@Override
+			public void IGE(int ige) {
+				if (attack()){
+					ige *= 2f;
+				}
+			}
+		}
+
+		abstract class Warrior extends Role{
+			//
+			@Override
+			public void STE(int dmg) {
+				if (attack()){
+					dmg *= 1.25f;
+				}
+			}
+		}
+		*/
 
 public abstract class PlatformSupport {
 	
 	public abstract void updateDisplaySize();
 	
 	public abstract void updateSystemUI();
+
+
 
 	public abstract boolean connectedToUnmeteredNetwork();
 

@@ -61,10 +61,13 @@ public class WandOfFrost extends DamageWand {
 			heap.freeze();
 		}
 
+
+
 		Char ch = Actor.findChar(bolt.collisionPos);
 		if (ch != null){
 
 			int damage = damageRoll();
+
 
 			if (ch.buff(Frost.class) != null){
 				return; //do nothing, can't affect a frozen target

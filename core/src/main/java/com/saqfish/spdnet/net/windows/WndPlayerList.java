@@ -19,26 +19,30 @@
 package com.saqfish.spdnet.net.windows;
 
 import com.saqfish.spdnet.actors.hero.HeroClass;
+import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.net.Net;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.scenes.PixelScene;
 import com.saqfish.spdnet.ui.IconButton;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
 import com.saqfish.spdnet.ui.ScrollPane;
+import com.saqfish.spdnet.ui.Window;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Button;
 import com.watabou.noosa.ui.Component;
 
 public class WndPlayerList extends NetWindow {
-
+	private Component content;
 	private static final int WIDTH_P = 120;
 	private static final int WIDTH_L = 144;
-	private static final int HEIGHT	= 120;
-
-	private static final int VGAP = 5;
-	private static final int HGAP = 3;
-
+	private static final int HEIGHT	= 150;
+	private ScrollPane list;
+	private static final int VGAP = 15;
+	private static final int HGAP = 8;
+	private Camera cam = camera();
 	public static class Roles {
 		public static final int ADMIN = 0;
 		public static final int PLAYER = 1;
@@ -50,7 +54,7 @@ public class WndPlayerList extends NetWindow {
 
 		float y = 2;
 
-		RenderedTextBlock titleLbl = PixelScene.renderTextBlock("Online Players" , 9);
+		RenderedTextBlock titleLbl = PixelScene.renderTextBlock(Messages.get(WndPlayerList.class,"online"), 9);
 		add(titleLbl);
 		titleLbl.setPos(VGAP/2, y);
 
@@ -75,10 +79,11 @@ public class WndPlayerList extends NetWindow {
 
 		y+=sep.y+HGAP;
 
-		ScrollPane list = new ScrollPane( new Component() );
+		list = new ScrollPane( new Component() );
+		list.camera = cam;
 		add( list );
 
-		Component content = list.content();
+		content = list.content();
 		content.clear();
 
 		list.scrollTo( 0, 0 );
@@ -90,7 +95,7 @@ public class WndPlayerList extends NetWindow {
 
 			Receive.Player player = p.list[i];
 
-			if(player.role != Roles.BOT) {
+			if(Net.w != null) {
 				PlayerEntry playerRank = new PlayerEntry(player, i + 1) {
 					@Override
 					protected void onClick() {
@@ -127,14 +132,16 @@ public class WndPlayerList extends NetWindow {
 			this.order = order;
 			this.enabled = player.depth != null;
 
-			int color = getRoleColor(player.role);
-			nick = PixelScene.renderTextBlock(player.nick, 11);
-			nick.hardlight(color);
+			int nickColor = hashCode()+1;
+			//int color = getRoleColor(player.role);
+			nick = PixelScene.renderTextBlock(player.nick, 6);
+			nick.hardlight(nickColor);
 			add(nick);
 		}
 
 		@Override
 		protected void layout() {
+
 			super.layout();
 			nick.setPos(VGAP, y);
 			nick.alpha( enabled ? 1.0f : 0.3f );

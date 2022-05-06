@@ -44,7 +44,7 @@ More advanced modders can change the format for releases if they like, or make e
 
 Shattered Pixel Dungeon includes a news feed which pulls blog posts from [ShatteredPixel.com](http://ShatteredPixel.com). The articles there may not be useful to your mod so you may wish to remove them.
 
-To simply disable news entirely, comment out the line `add(btnNews);` in [TitleScene.java](/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java).
+To simply disable news entirely, comment out the line `add(btnRanking);` in [TitleScene.java](/core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java).
 
 You can also point the news checker to a different feed by modifing the URLs in [ShatteredNews.java](/services/news/shatteredNews/src/main/java/com/shatteredpixel/shatteredpixeldungeon/services/news/ShatteredNews.java). Note that the current logic expects an atom feed and is slightly customized to ShatteredPixel.com, but the logic can be modified to work with other xml feed types.
 

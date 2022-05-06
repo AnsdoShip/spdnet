@@ -21,6 +21,8 @@
 
 package com.saqfish.spdnet.items;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
 import com.saqfish.spdnet.Badges;
 import com.saqfish.spdnet.Challenges;
 import com.saqfish.spdnet.Dungeon;
@@ -28,8 +30,12 @@ import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.Statistics;
 import com.saqfish.spdnet.actors.Actor;
 import com.saqfish.spdnet.actors.hero.Hero;
+import com.saqfish.spdnet.items.weapon.melee.MagesStaff;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.scenes.AmuletScene;
+import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.sprites.ItemSpriteSheet;
+import com.saqfish.spdnet.utils.GLog;
 import com.watabou.noosa.Game;
 
 import java.io.IOException;
@@ -50,6 +56,15 @@ public class Amulet extends Item {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_END );
 		return actions;
+	}
+
+	@Override
+	public void doThrow( Hero hero ) {
+		if(net().connected()) {
+			GLog.w(Messages.get(Amulet.class,"why"));
+		} else {
+			GameScene.selectCell(thrower);
+		}
 	}
 	
 	@Override

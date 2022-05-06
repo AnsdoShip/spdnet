@@ -25,9 +25,11 @@ import com.saqfish.spdnet.GamesInProgress;
 import com.saqfish.spdnet.items.Amulet;
 import com.saqfish.spdnet.items.Heap;
 import com.saqfish.spdnet.items.Item;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Send;
 import com.saqfish.spdnet.net.windows.NetWindow;
+import com.saqfish.spdnet.net.windows.WndServerInfo;
 import com.saqfish.spdnet.scenes.RankingsScene;
 import com.watabou.noosa.Game;
 
@@ -46,7 +48,7 @@ public class Sender {
 
         public void sendPlayerListRequest(){ net.socket().emit(Events.PLAYERLISTREQUEST, 0); }
         public void sendRecordsRequest(){ net.socket().emit(Events.RECORDS, 0); }
-
+        public void sendRecordsRequest1(){ net.socket().emit(Events.DR, 0); }
         public void sendTransfer(Item i, String id, Heap h) {
                 Send.Transfer item = new Send.Transfer(i, id);
                 net.socket().emit(Events.TRANSFER, map(item), (Ack) args -> {
@@ -89,6 +91,7 @@ public class Sender {
                                 break;
                         case Send.MOVE:
                                 c = new Send.Move(((Integer)o));
+
                 }
                 json = map(c);
                 if(net.socket().connected() && json != null) net.socket().emit(Events.ACTION,type, json);
@@ -100,8 +103,9 @@ public class Sender {
                         Dungeon.win(Amulet.class);
                         Dungeon.deleteGame(GamesInProgress.curSlot, true);
                         Game.switchScene(RankingsScene.class);
+                        net().sender().sendRecordsRequest();
                 }else
-                        NetWindow.error("You're not connected!\nTo record your win to the server, connect first.");
+                        NetWindow.error(Messages.get(WndServerInfo.class,"winmust"));
         }
 
         // Object -> String

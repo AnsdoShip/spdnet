@@ -20,6 +20,7 @@ package com.saqfish.spdnet.net.windows;
 
 import com.saqfish.spdnet.GamesInProgress;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.ui.BlueButton;
 import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.ui.LabeledText;
@@ -61,7 +62,7 @@ public class WndMotd extends NetWindow {
 
 		pos = tfMesage.bottom() + 2*MARGIN;
 
-		LabeledText seedText = new LabeledText("Seed", String.valueOf(seed), 6, 6){
+		LabeledText seedText = new LabeledText(Messages.get(WndMotd.class,"server_info"), "", 6, 6){
 			@Override
 			protected void layout() {
 				super.layout();

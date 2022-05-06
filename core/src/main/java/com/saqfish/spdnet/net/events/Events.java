@@ -25,6 +25,7 @@ public class Events {
     public static final String TRANSFER = "transfer";
     public static final String CHAT = "chat";
     public static final String RECORDS = "records";
+    public static final String DR = "death";
     public static final String JOIN = "join";
     public static final String LEAVE = "leave";
 

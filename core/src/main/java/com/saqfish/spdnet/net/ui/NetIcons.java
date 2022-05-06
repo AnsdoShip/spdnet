@@ -33,7 +33,7 @@ public enum NetIcons {
         return get( this );
     }
 
-    public static Image get( NetIcons type ) {
+    public static Image get(NetIcons type ) {
         Image icon = new Image(Assets.Interfaces.NETICONS);
 
         switch (type) {

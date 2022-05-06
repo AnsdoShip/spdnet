@@ -118,10 +118,7 @@ public class HeroSelectScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				if(!ShatteredPixelDungeon.net().connected()) {
-					NetWindow.error("Not connected", "You must connect before starting a new game");
-					return;
-				}
+
 				if (GamesInProgress.selectedClass == null) return;
 
 				Dungeon.hero = null;

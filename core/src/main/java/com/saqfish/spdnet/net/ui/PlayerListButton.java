@@ -19,9 +19,12 @@
 package com.saqfish.spdnet.net.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.windows.NetWindow;
+import com.saqfish.spdnet.net.windows.WndServerInfo;
+import com.saqfish.spdnet.scenes.TitleScene;
 import com.watabou.noosa.Game;
 
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
@@ -36,7 +39,8 @@ public class PlayerListButton extends BlueButton {
         if (net().connected()) {
             net().sender().sendPlayerListRequest();
         }else{
-            NetWindow.error("Not connected", "You must connect before viewing players");
+            NetWindow.error(Messages.get(WndServerInfo.class,"noconnected"), Messages.get(TitleScene.class
+                    ,"playmustconted"));
             return;
         }
         net().socket().once(Events.PLAYERLISTREQUEST, args -> {

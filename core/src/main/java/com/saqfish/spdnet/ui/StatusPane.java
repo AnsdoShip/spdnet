@@ -21,6 +21,8 @@
 
 package com.saqfish.spdnet.ui;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.SPDAction;
@@ -28,6 +30,7 @@ import com.saqfish.spdnet.Statistics;
 import com.saqfish.spdnet.effects.Speck;
 import com.saqfish.spdnet.items.Item;
 import com.saqfish.spdnet.journal.Document;
+import com.saqfish.spdnet.net.Net;
 import com.saqfish.spdnet.net.ui.NetIndicator;
 import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.scenes.PixelScene;
@@ -36,6 +39,7 @@ import com.saqfish.spdnet.windows.WndGame;
 import com.saqfish.spdnet.windows.WndHero;
 import com.saqfish.spdnet.windows.WndJournal;
 import com.saqfish.spdnet.windows.WndStory;
+import com.watabou.glwrap.Blending;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
@@ -157,10 +161,39 @@ public class StatusPane extends Component {
 		add( buffs );
 
 		add( pickedUp = new Toolbar.PickedUpItem());
-		
-		version = new BitmapText( "v" + Game.version, PixelScene.pixelFont);
-		version.alpha( 0.5f );
-		add(version);
+
+
+		if(net().connected()) {
+			version = new BitmapText("v" + Game.version + "-Online", PixelScene.pixelFont) {
+				private float time;
+
+				@Override
+				public void update() {
+					super.update();
+					am = 1f + 0.01f * Math.max(0f, (float) Math.sin(time += Game.elapsed / 5));
+					time += Game.elapsed / 5f;
+					float r = 0.43f + 0.25f * Math.max(0f, (float) Math.sin(time));
+					float g = 0.43f + 0.75f * Math.max(0f, (float) Math.sin(time + 2 * Math.PI / 3));
+					float b = 0.43f + 0.95f * Math.max(0f, (float) Math.sin(time + 4 * Math.PI / 3));
+					version.hardlight(r, g, b);
+					if (time >= 2f * Math.PI) time = 0;
+				}
+
+				@Override
+				public void draw() {
+					Blending.setLightMode();
+					super.draw();
+					Blending.setNormalMode();
+				}
+			};
+			version.alpha(0.5f);
+			add(version);
+		} else {
+			version = new BitmapText("v" + Game.version + "-Offline", PixelScene.pixelFont);
+			version.alpha(0.8f);
+			version.hardlight(0xff0000);
+			add(version);
+		}
 	}
 
 	@Override

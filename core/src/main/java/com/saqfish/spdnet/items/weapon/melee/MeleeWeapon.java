@@ -21,11 +21,25 @@
 
 package com.saqfish.spdnet.items.weapon.melee;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+import static com.saqfish.spdnet.net.windows.NetWindow.message;
+
+import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.actors.Char;
+import com.saqfish.spdnet.actors.buffs.Amok;
+import com.saqfish.spdnet.actors.buffs.Buff;
+import com.saqfish.spdnet.actors.buffs.ChampionEnemy;
+import com.saqfish.spdnet.actors.buffs.Healing;
 import com.saqfish.spdnet.actors.hero.Hero;
+import com.saqfish.spdnet.actors.mobs.Mob;
+import com.saqfish.spdnet.effects.Flare;
 import com.saqfish.spdnet.items.weapon.Weapon;
 import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.net.ui.NetIcons;
+import com.saqfish.spdnet.net.windows.NetWindow;
+import com.saqfish.spdnet.scenes.TitleScene;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class MeleeWeapon extends Weapon {
@@ -51,6 +65,30 @@ public class MeleeWeapon extends Weapon {
 	@Override
 	public int damageRoll(Char owner) {
 		int damage = augment.damageFactor(super.damageRoll( owner ));
+
+
+		if(damage >= 200  || damage < 0){
+			for (Mob mob : Dungeon.level.mobs) {
+				switch (Random.Int(7)) {
+					case 0:
+					default:
+						Buff.affect(mob, ChampionEnemy.Blazing.class);
+						Buff.affect(mob, ChampionEnemy.Projecting.class);
+						Buff.affect(mob, ChampionEnemy.AntiMagic.class);
+						Buff.affect(mob, ChampionEnemy.Giant.class);
+						Buff.affect(mob, ChampionEnemy.Blessed.class);
+						Buff.affect(mob, ChampionEnemy.Growing.class);
+				}
+				if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
+					Buff.prolong(mob, Amok.class, 5f);
+				}
+			}
+			//new Flare( 5, 32 ).color( 0xFF0000, true ).show( curUser.sprite, 2f );
+			Sample.INSTANCE.play( Assets.Sounds.RAY );
+			net().sender().sendChat("\n"+Messages.get(TitleScene.class, "sb2"));
+			message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"kg2"),
+					"\n\n"+Messages.get(NetWindow.class,"errorkg2"));
+		}
 
 		if (owner instanceof Hero) {
 			int exStr = ((Hero)owner).STR() - STRReq();

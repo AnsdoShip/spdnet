@@ -21,6 +21,8 @@
 
 package com.saqfish.spdnet.items.weapon.melee;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Badges;
 import com.saqfish.spdnet.Dungeon;
@@ -114,6 +116,15 @@ public class MagesStaff extends MeleeWeapon {
 	@Override
 	public void activate( Char ch ) {
 		applyWandChargeBuff(ch);
+	}
+
+	@Override
+	public void doThrow( Hero hero ) {
+		if(net().connected()) {
+			GLog.w(Messages.get(MagesStaff.class,"why"));
+		} else {
+			GameScene.selectCell(thrower);
+		}
 	}
 
 	@Override

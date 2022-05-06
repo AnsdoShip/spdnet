@@ -18,17 +18,23 @@
 
 package com.saqfish.spdnet.net;
 
+import static com.saqfish.spdnet.net.windows.NetWindow.message;
 import static java.util.Collections.singletonMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Send;
+import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.windows.NetWindow;
+import com.saqfish.spdnet.net.windows.WndMotd;
 import com.saqfish.spdnet.net.windows.WndServerInfo;
 import com.saqfish.spdnet.scenes.GameScene;
+import com.saqfish.spdnet.scenes.StartScene;
 import com.saqfish.spdnet.ui.Icons;
+import com.saqfish.spdnet.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 import com.watabou.utils.DeviceCompat;
 
@@ -42,7 +48,7 @@ import io.socket.emitter.Emitter;
 import io.socket.engineio.client.EngineIOException;
 
 public class Net {
-    public static String DEFAULT_HOST = "cn-zz-s1-b.miaovps.com";
+    public static String DEFAULT_HOST = "150.138.72.220";
     public static String DEFAULT_SCHEME = "http";
     public static String DEFAULT_KEY = "debug";
     public static long DEFAULT_ASSET_VERSION = 0;
@@ -54,8 +60,9 @@ public class Net {
     private ObjectMapper mapper;
     private Loader loader;
     private long seed;
+    private String motd;
 
-    private NetWindow w;
+    public static NetWindow w;
 
     public Net(String address, String key){
         URI url = URI.create(address);
@@ -99,6 +106,8 @@ public class Net {
         Emitter.Listener onConnected = args -> {
             if(w != null) {
                 Game.runOnRenderThread( () -> w.destroy());
+                message(Icons.get(Icons.NEWS), Messages.get(Net.class,"info"),
+                        Messages.get(Net.class,"server-info"));
             }
             if(Game.scene() instanceof GameScene)
                 ShatteredPixelDungeon.net().sender().sendAction(Send.INTERLEVEL, Dungeon.hero.heroClass.ordinal(), Dungeon.depth, Dungeon.hero.pos);
@@ -114,21 +123,19 @@ public class Net {
                 JSONObject data = (JSONObject)args[0];
                 String json = data.getString("message");
                 Events.Error e = mapper().readValue(json, Events.Error.class);
-                if(e.type != 1){
-                    NetWindow.message(Icons.get(Icons.CHANGES), "Update required", e.data);
-                }else NetWindow.error(e.data);
+                message(Icons.get(Icons.CHANGES), "Update required", e.data);
             }catch(ClassCastException ce){
                 try {
                     EngineIOException err = (EngineIOException) args[0];
-                    NetWindow.error(err.getMessage());
+                    NetWindow.error(Messages.get(Net.class,"xhr"));
                     System.out.println(err.getLocalizedMessage());
                     ((Throwable) err).printStackTrace();
                 }catch (Exception eignored) {
-                    NetWindow.error("Connection could not be established!");
+                    NetWindow.error(Messages.get(Net.class,"no-wifi"));
                 }
             }catch(Exception ignored) {
                 ignored.printStackTrace();
-                NetWindow.error("Connection could not be established!");
+                NetWindow.error(Messages.get(Net.class,"no-key"));
             }
             receiver.cancelAll();
             disconnect();
@@ -149,6 +156,7 @@ public class Net {
     }
     public void disconnect(){
         receiver.cancelAll();
+        receiver.startAll();
         socket.disconnect();
     }
 
@@ -171,8 +179,8 @@ public class Net {
     }
 
 
-    public void seed(long seed) { this.seed = seed; }
-    public long seed() { return this.seed; }
+    public void seed(long seed) { this.seed = DungeonSeed.randomSeed(); }
+    public long seed() { return DungeonSeed.randomSeed(); }
 
     public Boolean connected() { return socket != null && socket.connected(); }
     public Socket socket(){ return this.socket; }

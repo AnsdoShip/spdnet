@@ -38,9 +38,12 @@ import com.saqfish.spdnet.actors.buffs.Awareness;
 import com.saqfish.spdnet.actors.buffs.Barkskin;
 import com.saqfish.spdnet.actors.buffs.Berserk;
 import com.saqfish.spdnet.actors.buffs.Bless;
+import com.saqfish.spdnet.actors.buffs.Blindness;
 import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.buffs.Burning;
+import com.saqfish.spdnet.actors.buffs.ChampionEnemy;
 import com.saqfish.spdnet.actors.buffs.Combo;
+import com.saqfish.spdnet.actors.buffs.Cripple;
 import com.saqfish.spdnet.actors.buffs.Drowsy;
 import com.saqfish.spdnet.actors.buffs.Foresight;
 import com.saqfish.spdnet.actors.buffs.HoldFast;
@@ -50,21 +53,26 @@ import com.saqfish.spdnet.actors.buffs.LostInventory;
 import com.saqfish.spdnet.actors.buffs.MindVision;
 import com.saqfish.spdnet.actors.buffs.Momentum;
 import com.saqfish.spdnet.actors.buffs.Paralysis;
+import com.saqfish.spdnet.actors.buffs.Poison;
 import com.saqfish.spdnet.actors.buffs.Regeneration;
 import com.saqfish.spdnet.actors.buffs.SnipersMark;
 import com.saqfish.spdnet.actors.buffs.Vertigo;
 import com.saqfish.spdnet.actors.hero.abilities.ArmorAbility;
 import com.saqfish.spdnet.actors.hero.abilities.huntress.NaturesPower;
 import com.saqfish.spdnet.actors.hero.abilities.warrior.Endure;
+import com.saqfish.spdnet.actors.mobs.KaDied;
 import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.actors.mobs.Monk;
 import com.saqfish.spdnet.actors.mobs.Snake;
+import com.saqfish.spdnet.actors.mobs.Warlock;
+import com.saqfish.spdnet.actors.mobs.Wraith;
 import com.saqfish.spdnet.effects.CheckedCell;
 import com.saqfish.spdnet.effects.SpellSprite;
 import com.saqfish.spdnet.items.Amulet;
 import com.saqfish.spdnet.items.Ankh;
 import com.saqfish.spdnet.items.Dewdrop;
 import com.saqfish.spdnet.items.EquipableItem;
+import com.saqfish.spdnet.items.Gold;
 import com.saqfish.spdnet.items.Heap;
 import com.saqfish.spdnet.items.Heap.Type;
 import com.saqfish.spdnet.items.Item;
@@ -117,12 +125,15 @@ import com.saqfish.spdnet.levels.traps.Trap;
 import com.saqfish.spdnet.mechanics.ShadowCaster;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Send;
+import com.saqfish.spdnet.net.ui.NetIcons;
+import com.saqfish.spdnet.net.windows.NetWindow;
 import com.saqfish.spdnet.plants.Earthroot;
 import com.saqfish.spdnet.plants.Swiftthistle;
 import com.saqfish.spdnet.scenes.AlchemyScene;
 import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.scenes.InterlevelScene;
 import com.saqfish.spdnet.scenes.SurfaceScene;
+import com.saqfish.spdnet.scenes.TitleScene;
 import com.saqfish.spdnet.sprites.CharSprite;
 import com.saqfish.spdnet.sprites.HeroSprite;
 import com.saqfish.spdnet.ui.AttackIndicator;
@@ -146,8 +157,11 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+import static com.saqfish.spdnet.net.windows.NetWindow.message;
+import static com.saqfish.spdnet.net.windows.WndChat.initialized;
 
 public class Hero extends Char {
 
@@ -1030,7 +1044,15 @@ public class Hero extends Char {
 			//TODO this is slightly brittle, it assumes there are no disjointed sets of entrance tiles
 		} else if (Dungeon.level.map[pos] == Terrain.ENTRANCE) {
 
-			if (Dungeon.depth == 1) {
+			if (Dungeon.depth == 27) {
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndMessage( Messages.get(Hero.this, "net") ) );
+					}
+				});
+				ready();
+			} else if (Dungeon.depth == 1) {
 
 				if (belongings.getItem( Amulet.class ) == null) {
 					Game.runOnRenderThread(new Callback() {
@@ -1753,11 +1775,52 @@ public class Hero extends Char {
 		}
 	}
 
+	public static AtomicBoolean cnmkgsb = new AtomicBoolean(false);
+
 	@Override
 	public void move( int step ) {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step );
+
+		//TODO 小型反作弊系统
+		/*
+		 * 大于31级
+		 * 金币大于20000
+		 * 层数大于26层或者小于0层
+		 * 血量大于666
+		 * 伤害高于600
+		 *
+		 *
+		 * */
+		//TODO 大于27层 或者小于 0层
+		if(Dungeon.depth >27 && HT!=100 || Dungeon.depth < 0 && HT!=100){
+			message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"kg3"),
+					"\n\n"+Messages.get(NetWindow.class,"errorkg3"));
+			Mob moa = new KaDied();
+			moa.pos = pos;
+			GameScene.add(moa);
+			net().sender().sendChat("\n"+Messages.get(TitleScene.class, "sb4"));
+			HP=HT=100;
+			Buff.prolong( this, Blindness.class, Blindness.DURATION*200f );
+			Buff.affect( this, Poison.class ).set(Random.Int(1, 1) );
+			Buff.prolong( this, Cripple.class, Cripple.DURATION*200f );
+		}
+		//TODO 大于360血
+		if(HP>360 && HT!=10){
+			message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"kg4"),
+					"\n\n"+Messages.get(NetWindow.class,"errorkg4"));
+			net().sender().sendChat("\n"+Messages.get(TitleScene.class, "sb3"));
+		}
+
+		//TODO 大于31级或者小于0级
+		if(lvl >= 31 && HT!=1  || lvl < 0 && HT!=1 ){
+			message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"kg1"),
+					"\n\n"+Messages.get(NetWindow.class,"errorkg1"));
+			HP=HT=1;
+			STR=0;
+			net().sender().sendChat("\n"+Messages.get(TitleScene.class, "sb"));
+		}
 
 		if (!flying) {
 			if (Dungeon.level.water[pos]) {

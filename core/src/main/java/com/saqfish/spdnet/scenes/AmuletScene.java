@@ -24,10 +24,12 @@ package com.saqfish.spdnet.scenes;
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.GamesInProgress;
+import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.effects.Flare;
 import com.saqfish.spdnet.effects.Speck;
 import com.saqfish.spdnet.items.Amulet;
 import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.net.Sender;
 import com.saqfish.spdnet.net.events.Send;
 import com.saqfish.spdnet.net.windows.NetWindow;
 import com.saqfish.spdnet.ui.RedButton;
@@ -38,6 +40,8 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
+import java.io.IOException;
 
 public class AmuletScene extends PixelScene {
 	
@@ -71,7 +75,10 @@ public class AmuletScene extends PixelScene {
 		RedButton btnExit = new RedButton( Messages.get(this, "exit") ) {
 			@Override
 			protected void onClick() {
-					net().sender().sendWin();
+					Sender.sendWin();
+					Dungeon.deleteGame( GamesInProgress.curSlot, true );
+				Game.switchScene(TitleScene.class);
+				ShatteredPixelDungeon.net().sender().sendAction(Send.INTERLEVEL, 0, 0, 0);
 			}
 		};
 		btnExit.setSize( WIDTH, BTN_HEIGHT );

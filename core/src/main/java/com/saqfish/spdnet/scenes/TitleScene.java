@@ -31,11 +31,15 @@ import com.saqfish.spdnet.effects.BannerSprites;
 import com.saqfish.spdnet.effects.Fireball;
 import com.saqfish.spdnet.messages.Languages;
 import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.net.Receiver;
 import com.saqfish.spdnet.net.Settings;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Receive;
+import com.saqfish.spdnet.net.events.Send;
 import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.windows.NetWindow;
+import com.saqfish.spdnet.net.windows.WndChat;
+import com.saqfish.spdnet.net.windows.WndServerInfo;
 import com.saqfish.spdnet.services.news.News;
 import com.saqfish.spdnet.services.updates.AvailableUpdateData;
 import com.saqfish.spdnet.services.updates.Updates;
@@ -59,13 +63,46 @@ import com.watabou.utils.PlatformSupport;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+import static com.saqfish.spdnet.net.windows.NetWindow.message;
+import static com.saqfish.spdnet.net.windows.WndChat.initialized;
 import static com.watabou.noosa.Game.platform;
 
 public class TitleScene extends PixelScene {
-	
+
+	public static class ChatMessage {
+		public String id;
+		public String nick;
+		public String message;
+
+		public ChatMessage (String id, String nick, String message){
+			this.id = id;
+			this.nick = nick;
+			this.message = message;
+		}
+	}
+
+	private boolean newMessage;
+	private ArrayList<Receiver.ChatMessage> messages;
+
+	public Receiver.ChatMessage lastMessage(){
+		newMessage = false;
+		return messages.get(messages.size()-1);
+	}
+
+	public boolean newMessage(){
+		return newMessage;
+	}
+
+
+	public void handleChat(String id,String nick,String message){
+		messages.add(new Receiver.ChatMessage(id, nick, message));
+		newMessage = true;
+	}
+
 	@Override
 	public void create() {
 		
@@ -147,7 +184,15 @@ public class TitleScene extends PixelScene {
 		add(btnPlay);
 
 
-		StyledButton btnConnection = new StyledButton(GREY_TR, "SPDNet"){
+		StyledButton btnConnection = new StyledButton(GREY_TR, Messages.get(TitleScene.class,"server")){
+			@Override
+			public void update() {
+				if (net().connected()) {
+					textColor(0x00ff00);
+				} else {
+					textColor(0xff0000);
+				}
+			}
 			@Override
 			protected void onClick() {
 				NetWindow.showServerInfo();
@@ -159,13 +204,32 @@ public class TitleScene extends PixelScene {
 		add(btnConnection);
 
 
-		StyledButton btnPlayers = new StyledButton(GREY_TR, "Players"){
+
+		StyledButton btnPlayers = new StyledButton(GREY_TR, Messages.get(TitleScene.class,"playlist")){
+			@Override
+			public void update() {
+				if (net().connected()) {
+					textColor(0x00ff00);
+					//TODO 使用AtomicBoolean进行并发处理，以达到执行一次的目的！！！
+					if(net().connected() && initialized.compareAndSet( true,false)) {
+						net().sender().sendChat("\n"+Messages.get(TitleScene.class, "join"));
+					}
+				} else {
+					//TODO 使用AtomicBoolean进行并发处理，以达到执行一次的目的！！！
+					textColor(0xff0000);
+					if(!net().connected() && initialized.compareAndSet( false,true)) {
+						//NOT FOUND
+					}
+				}
+			}
 			@Override
 			protected void onClick() {
 				if (net().connected()) {
 					net().sender().sendPlayerListRequest();
 				}else{
-					NetWindow.error("Not Connected", "You must connect before viewing players");
+					NetWindow.error(Messages.get(WndServerInfo.class,"noconnected"), Messages.get(TitleScene.class
+							,"playmustconted"));
+
 					return;
 				}
 				net().socket().once(Events.PLAYERLISTREQUEST, args -> {
@@ -187,11 +251,21 @@ public class TitleScene extends PixelScene {
 
 		StyledButton btnRankings = new StyledButton(GREY_TR,Messages.get(this, "rankings")){
 			@Override
+			public void update() {
+				if (net().connected()) {
+					textColor(0x00ff00);
+				} else {
+					textColor(0xff0000);
+				}
+			}
+			@Override
 			protected void onClick() {
 				if (net().connected()) {
 					net().sender().sendRecordsRequest();
 				}else{
-					NetWindow.error("Not Connected", "You must connect before viewing players");
+					NetWindow.error(Messages.get(WndServerInfo.class,"noconnected"), Messages.get(TitleScene.class
+							,"rankmustconted"));
+					Game.switchScene(RankingsScene.class);
 					return;
 				}
 				net().socket().once(Events.RECORDS, args -> {
@@ -203,12 +277,6 @@ public class TitleScene extends PixelScene {
 						e.printStackTrace();
 					}
 				});
-			}
-
-			@Override
-			protected boolean onLongClick() {
-				ShatteredPixelDungeon.switchNoFade( RankingsScene.class );
-				return true;
 			}
 		};
 		btnRankings.icon(Icons.get(Icons.RANKINGS));
@@ -222,10 +290,6 @@ public class TitleScene extends PixelScene {
 		};
 		btnBadges.icon(Icons.get(Icons.BADGES));
 		add(btnBadges);
-
-		StyledButton btnNews = new NewsButton(GREY_TR, Messages.get(this, "news"));
-		btnNews.icon(Icons.get(Icons.NEWS));
-		add(btnNews);
 
 		StyledButton btnChanges = new ChangesButton(GREY_TR, Messages.get(this, "changes"));
 		btnChanges.icon(Icons.get(Icons.CHANGES));
@@ -249,30 +313,40 @@ public class TitleScene extends PixelScene {
 		GAP = Math.max(GAP, 2);
 
 		if (landscape()) {
-			btnPlay.text("Enter");
+			//btnPlay.text("Enter");
 			btnPlay.setRect(title.x-50, topRegion+GAP, (MIN_WIDTH_L/3)-1, BTN_HEIGHT);
 			align(btnPlay);
 
 			btnConnection.setRect(btnPlay.right()+2, topRegion+GAP, btnPlay.width(), BTN_HEIGHT);
 			btnPlayers.setRect(btnConnection.right()+2, topRegion+GAP, btnConnection.width(), BTN_HEIGHT);
-			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (MIN_WIDTH_L/3)-1, BTN_HEIGHT);
-			btnBadges.setRect(btnRankings.left(), btnRankings.bottom()+GAP, btnRankings.width(), BTN_HEIGHT);
-			btnNews.setRect(btnRankings.right()+2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
-			btnChanges.setRect(btnNews.left(), btnNews.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
-			btnSettings.setRect(btnNews.right()+2, btnNews.top(), btnRankings.width(), BTN_HEIGHT);
-			btnAbout.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnRankings.width(), BTN_HEIGHT);
+
+			btnBadges.setRect(btnPlay.left(), btnPlay.bottom()+GAP, btnPlay.width(), BTN_HEIGHT);
+			//btnRanking.setRect(btnRankings.right()+2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
+			btnChanges.setRect(btnPlayers.left(), btnConnection.bottom() + GAP, btnPlayers.width(), BTN_HEIGHT);
+			btnSettings.setRect(btnConnection.left(), btnConnection.bottom()+GAP, btnPlayers.width(), BTN_HEIGHT);
+
+			btnAbout.setRect(btnBadges.left(), btnBadges.bottom() + GAP, btnPlayers.width(), BTN_HEIGHT);
+
+			btnRankings.setRect(btnSettings.left(), btnSettings.bottom() + GAP, btnPlayers.width()*2+2, BTN_HEIGHT);
 		} else {
 			btnPlay.setRect(title.x, topRegion+GAP, title.width(), BTN_HEIGHT);
 			align(btnPlay);
 
-			btnConnection.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
-			btnPlayers.setRect(btnConnection.right()+2, btnConnection.top(), btnConnection.width(), BTN_HEIGHT);
-			btnRankings.setRect(btnPlay.left(), btnConnection.bottom()+ GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
-			btnBadges.setRect(btnRankings.right()+2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
-			btnNews.setRect(btnRankings.left(), btnRankings.bottom()+ GAP, btnRankings.width(), BTN_HEIGHT);
-			btnChanges.setRect(btnNews.right()+2, btnNews.top(), btnNews.width(), BTN_HEIGHT);
-			btnSettings.setRect(btnNews.left(), btnNews.bottom()+GAP, btnRankings.width(), BTN_HEIGHT);
+			btnConnection.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
+
+			//btnRankings.setRect(btnPlay.left(), btnConnection.bottom()+ GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
+
+			btnRankings.setRect(btnConnection.left(), btnConnection.bottom()+ GAP, btnPlay.width(), BTN_HEIGHT);
+
+			btnBadges.setRect(btnRankings.left(), btnRankings.bottom()+ GAP, (btnPlay.width()/2)-1, BTN_HEIGHT);
+
+			btnChanges.setRect(btnBadges.right()+2, btnBadges.top(), btnBadges.width(), BTN_HEIGHT);
+
+			btnSettings.setRect(btnBadges.left(), btnBadges.bottom()+GAP, btnBadges.width(), BTN_HEIGHT);
+
 			btnAbout.setRect(btnSettings.right()+2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
+
+			btnPlayers.setRect(btnSettings.left(), btnSettings.bottom()+GAP, btnPlay.width(), BTN_HEIGHT);
 		}
 
 		BitmapText version = new BitmapText( "v" + Game.version, pixelFont);
@@ -284,7 +358,7 @@ public class TitleScene extends PixelScene {
 
 		fadeIn();
 	}
-	
+
 	private void placeTorch( float x, float y ) {
 		Fireball fb = new Fireball();
 		fb.setPos( x, y );

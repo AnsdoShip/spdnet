@@ -50,6 +50,7 @@ import com.saqfish.spdnet.effects.particles.ShadowParticle;
 import com.saqfish.spdnet.items.Generator;
 import com.saqfish.spdnet.items.Gold;
 import com.saqfish.spdnet.items.Item;
+import com.saqfish.spdnet.items.armor.glyphs.Stone;
 import com.saqfish.spdnet.items.artifacts.TimekeepersHourglass;
 import com.saqfish.spdnet.items.rings.Ring;
 import com.saqfish.spdnet.items.rings.RingOfWealth;
@@ -715,7 +716,7 @@ public abstract class Mob extends Char {
 				}
 			}
 		}
-
+		
 		if(isBoss())net().sender().sendAction(Send.BOSSKILL, name());
 	}
 
@@ -724,7 +725,11 @@ public abstract class Mob extends Char {
 				this instanceof Tengu ||
 				this instanceof DM300 ||
 				this instanceof DwarfKing ||
-				this instanceof YogDzewa
+				this instanceof YogDzewa ||
+				this instanceof Statue ||
+				this instanceof CrystalMimic||
+				this instanceof GoldenMimic ||
+				this instanceof ArmoredBrute
 		) return true;
 		return false;
 	}

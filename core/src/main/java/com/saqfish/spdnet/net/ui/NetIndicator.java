@@ -19,10 +19,16 @@
 package com.saqfish.spdnet.net.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.saqfish.spdnet.items.journal.Guidebook;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.windows.NetWindow;
+import com.saqfish.spdnet.net.windows.WndServerInfo;
+import com.saqfish.spdnet.scenes.TitleScene;
 import com.saqfish.spdnet.ui.Tag;
+import com.saqfish.spdnet.utils.GLog;
+import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 
@@ -57,20 +63,36 @@ public class NetIndicator extends Tag {
         icon.x = right()-icon.width()-2;
         icon.y = y+3;
     }
+    private float time;
 
     @Override
     public void update() {
         super.update();
-        bg.hardlight(net().connected() ? 0x52846b: 0x845252);
+        if (net().reciever().newMessage()) {
+            time += 0.05f;
+
+            float r = 0.43f + 0.25f * Math.max(0f, (float) Math.sin(time));
+            float g = 0.43f + 0.75f * Math.max(0f, (float) Math.sin(time + 2 * Math.PI / 3));
+            float b = 0.43f + 0.95f * Math.max(0f, (float) Math.sin(time + 4 * Math.PI / 3));
+            bg.hardlight(r, g, b);
+            if (time >= 2f * Math.PI) time = 0;
+        } else if(net().connected()) {
+            bg.hardlight(0x52846b);
+        } else {
+            bg.hardlight(0x845252);
+        }
         setIcon(net().reciever().newMessage() ? CHAT: PLAYER_LIST);
     }
+
+
 
     @Override
     protected void onClick() {
         if (net().connected()) {
             net().sender().sendPlayerListRequest();
         }else{
-            NetWindow.error("Not connected", "You must connect before viewing players");
+            NetWindow.error(Messages.get(WndServerInfo.class,"noconnected"), Messages.get(TitleScene.class
+                    ,"playmustconted"));
             return;
         }
         net().socket().once(Events.PLAYERLISTREQUEST, args -> {

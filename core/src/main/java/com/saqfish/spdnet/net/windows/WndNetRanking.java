@@ -20,6 +20,7 @@ package com.saqfish.spdnet.net.windows;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.saqfish.spdnet.actors.hero.HeroClass;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.scenes.PixelScene;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
@@ -53,11 +54,11 @@ public class WndNetRanking extends NetWindow {
 
         float y = 2;
 
-        RenderedTextBlock winsLbl = PixelScene.renderTextBlock("Wins", 9);
+        RenderedTextBlock winsLbl = PixelScene.renderTextBlock(Messages.get(WndNetRanking.class,"wins"), 7);
         add(winsLbl);
         winsLbl.setPos(width-winsLbl.width()-VGAP, y);
 
-        RenderedTextBlock nickLbl = PixelScene.renderTextBlock("Player", 9);
+        RenderedTextBlock nickLbl = PixelScene.renderTextBlock(Messages.get(WndNetRanking.class,"players"), 7);
         add(nickLbl);
         nickLbl.setPos(VGAP, y);
 
@@ -154,10 +155,10 @@ public class WndNetRanking extends NetWindow {
         public PlayerRank(Receive.Record player){
             this.enabled = player.depth != null;
 
-            wins = PixelScene.renderTextBlock(enabled ? String.valueOf(player.wins): "-", 8);
+            wins = PixelScene.renderTextBlock(enabled ? String.valueOf(player.wins): "-", 7);
             add(wins);
 
-            label = PixelScene.renderTextBlock(player.nick, 8);
+            label = PixelScene.renderTextBlock(player.nick, 7);
             add(label);
         }
 

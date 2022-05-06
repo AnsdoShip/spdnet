@@ -21,6 +21,8 @@
 
 package com.saqfish.spdnet.scenes;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
 import com.saqfish.spdnet.Badges;
 import com.saqfish.spdnet.Chrome;
 import com.saqfish.spdnet.GamesInProgress;
@@ -28,9 +30,11 @@ import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.actors.hero.HeroSubClass;
 import com.saqfish.spdnet.journal.Journal;
 import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.net.Net;
 import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.windows.NetWindow;
 import com.saqfish.spdnet.net.windows.WndNetOptions;
+import com.saqfish.spdnet.net.windows.WndServerInfo;
 import com.saqfish.spdnet.ui.Archs;
 import com.saqfish.spdnet.ui.ExitButton;
 import com.saqfish.spdnet.ui.Icons;
@@ -50,7 +54,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class StartScene extends PixelScene {
-	
+	public static NetWindow w;
 	private static final int SLOT_WIDTH = 120;
 	private static final int SLOT_HEIGHT = 30;
 	
@@ -165,7 +169,7 @@ public class StartScene extends PixelScene {
 				seed = bundle.getLong("seed");
 				eligible = ShatteredPixelDungeon.net().connected() &&
 						ShatteredPixelDungeon.net().seed() == seed &&
-						seed != 0;
+						seed == 0;
 			} catch (IOException e) {
 				// e.printStackTrace();
 			}
@@ -231,7 +235,7 @@ public class StartScene extends PixelScene {
 				
 			}
 
-			if(newButtonSlot) bg.hardlight(eligible ? 0x00FF00: 0xff0000);
+			if(newButtonSlot) bg.hardlight(net().connected() ? 0x00FF00: 0xFF0000);
 
 			layout();
 		}
@@ -289,21 +293,25 @@ public class StartScene extends PixelScene {
 				GamesInProgress.curSlot = slot;
 				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 			} else {
-				if(eligible){
+				if(net().connected()){
 					ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
 				}else{
-					if(!ShatteredPixelDungeon.net().connected()) NetWindow.error("Not connected", "You must connect before loading save");
-					else NetWindow.runWindow(new WndNetOptions(NetIcons.get(NetIcons.ALERT), "Seed Mismatch","Save seed: "+seed+"\nServer seed: " +ShatteredPixelDungeon.net().seed(), "Delete"){
-						@Override
-						protected void onSelect(int index) {
-							super.onSelect(index);
-							if (index ==0){
-								FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
-								GamesInProgress.setUnknown(slot);
-								ShatteredPixelDungeon.switchNoFade(StartScene.class);
-							}
-						}
-					});
+					if(!ShatteredPixelDungeon.net().connected()) NetWindow.error( Messages.get(WndServerInfo.class,
+							"noconnected"),  Messages.get(WndServerInfo.class,"info-x"));
+					ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
+					//else NetWindow.runWindow(new WndNetOptions(NetIcons.get(NetIcons.ALERT), "Seed Mismatch","Save " +
+							//"seed: "+seed+"\nServer seed: " +ShatteredPixelDungeon.net().seed(), "Delete"){
+						//	@Override
+						//	protected void onSelect(int index) {
+						//		super.onSelect(index);
+						//		if (index ==0){
+						//			FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
+						//			GamesInProgress.setUnknown(slot);
+						//			ShatteredPixelDungeon.switchNoFade(StartScene.class);
+						//		}
+						//	}
+						//});
+
 				}
 			}
 		}

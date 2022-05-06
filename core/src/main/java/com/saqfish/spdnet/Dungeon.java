@@ -36,6 +36,8 @@ import com.saqfish.spdnet.actors.mobs.npcs.Blacksmith;
 import com.saqfish.spdnet.actors.mobs.npcs.Ghost;
 import com.saqfish.spdnet.actors.mobs.npcs.Imp;
 import com.saqfish.spdnet.actors.mobs.npcs.Wandmaker;
+import com.saqfish.spdnet.custom.utils.CustomGameSettings;
+import com.saqfish.spdnet.custom.utils.SeedUtil;
 import com.saqfish.spdnet.items.Ankh;
 import com.saqfish.spdnet.items.Generator;
 import com.saqfish.spdnet.items.Heap;
@@ -59,6 +61,7 @@ import com.saqfish.spdnet.levels.CityBossLevel;
 import com.saqfish.spdnet.levels.HallsBossLevel;
 import com.saqfish.spdnet.levels.PrisonBossLevel;
 import com.saqfish.spdnet.levels.PrisonLevel;
+import com.saqfish.spdnet.levels.ReloadLevel;
 import com.saqfish.spdnet.levels.SewerBossLevel;
 import com.saqfish.spdnet.levels.SewerLevel;
 import com.saqfish.spdnet.levels.rooms.secret.SecretRoom;
@@ -80,6 +83,7 @@ import com.watabou.utils.SparseArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class Dungeon {
@@ -179,7 +183,8 @@ public class Dungeon {
 		challenges = SPDSettings.challenges();
 		mobsToChampion = -1;
 
-		seed = ((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).net.seed();
+		String str = CustomGameSettings.getSeedString();
+		seed = str.equals("")?DungeonSeed.randomSeed(): SeedUtil.directConvert(str, 'A', 26);//DungeonSeed.randomSeed();
 
 		Actor.clear();
 		Actor.resetNextID();
@@ -228,9 +233,21 @@ public class Dungeon {
 	public static boolean isChallenged( int mask ) {
 		return (challenges & mask) != 0;
 	}
+
+	public static Level DT() {
+		Dungeon.level = null;
+		Actor.clear();
+		switch (depth) {
+			case 1:
+				level = new ReloadLevel();
+				break;
+		}
+		level.create();
+		return level;
+	}
 	
 	public static Level newLevel() {
-		
+
 		Dungeon.level = null;
 		Actor.clear();
 		
@@ -248,7 +265,9 @@ public class Dungeon {
 		Level level;
 		switch (depth) {
 		case 1:
-		case 2:
+			level = new ReloadLevel();
+			break;
+			case 2:
 		case 3:
 		case 4:
 			level = new SewerLevel();

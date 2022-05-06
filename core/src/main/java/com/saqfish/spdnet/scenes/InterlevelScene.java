@@ -32,6 +32,7 @@ import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.items.LostBackpack;
 import com.saqfish.spdnet.levels.Level;
+import com.saqfish.spdnet.levels.ReloadLevel;
 import com.saqfish.spdnet.levels.features.Chasm;
 import com.saqfish.spdnet.levels.rooms.special.SpecialRoom;
 import com.saqfish.spdnet.messages.Messages;
@@ -70,7 +71,7 @@ public class InterlevelScene extends PixelScene {
 	private static float fadeTime;
 	
 	public enum Mode {
-		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE
+		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE,LETGO
 	}
 	public static Mode mode;
 	
@@ -143,6 +144,10 @@ public class InterlevelScene extends PixelScene {
 			case RETURN:
 				loadingDepth = returnDepth;
 				scrollSpeed = returnDepth > Dungeon.depth ? 15 : -15;
+				break;
+			case LETGO:
+				loadingDepth = returnDepth;
+				scrollSpeed =  -15;
 				break;
 		}
 
@@ -274,6 +279,9 @@ public class InterlevelScene extends PixelScene {
 							case RESET:
 								reset();
 								break;
+							case LETGO:
+								portal(1);
+								break;
 						}
 						
 					} catch (Exception e) {
@@ -291,6 +299,21 @@ public class InterlevelScene extends PixelScene {
 			thread.start();
 		}
 		waitingTime = 0f;
+	}
+
+	private void portal(int branch) throws IOException {
+
+		Actor.fixTime();
+		//\\Dungeon.saveLevel();
+		Level level;
+		switch(branch){
+			case 1:
+				level = Dungeon.DT();
+				break;
+			default:
+				level = Dungeon.newLevel();
+		}
+		Dungeon.switchLevel(level, level.entrance);
 	}
 	
 	@Override

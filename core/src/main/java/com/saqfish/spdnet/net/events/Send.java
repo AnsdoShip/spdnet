@@ -22,6 +22,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.actors.buffs.Bleeding;
 import com.saqfish.spdnet.actors.buffs.Burning;
+import com.saqfish.spdnet.actors.buffs.Corrosion;
+import com.saqfish.spdnet.actors.buffs.Hunger;
+import com.saqfish.spdnet.actors.buffs.Light;
+import com.saqfish.spdnet.actors.buffs.Ooze;
+import com.saqfish.spdnet.actors.buffs.Poison;
 import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.items.Item;
 import com.saqfish.spdnet.items.KindOfWeapon;
@@ -30,6 +35,9 @@ import com.saqfish.spdnet.items.armor.Armor;
 import com.saqfish.spdnet.items.artifacts.Artifact;
 import com.saqfish.spdnet.items.rings.Ring;
 import com.saqfish.spdnet.levels.features.Chasm;
+import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.scenes.TitleScene;
+import com.saqfish.spdnet.utils.GLog;
 import com.watabou.noosa.Game;
 
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
@@ -41,6 +49,7 @@ public class Send {
     public static final int DEATH = 3;
     public static final int BOSSKILL = 4;
     public static final int WIN = 5;
+    public static final int JOIN = 7;
     public static final int RECORDSREQUEST = 6;
 
     public static class Message {
@@ -51,15 +60,24 @@ public class Send {
         public String cause;
 
         public Death(Object cause){
-            if(cause instanceof Mob) this.cause = "was killed by a " + ((Mob)cause).name();
-            else if(cause instanceof Chasm) this.cause = "fell to death";
-            else if(cause instanceof Bleeding) this.cause = "bled to death";
-            else if(cause instanceof Burning) this.cause = "burned to death";
-            else this.cause = "died";
+            //if(cause instanceof Mob) this.cause = "was killed by a " + ((Mob)cause).name();
+            //else if(cause instanceof Chasm) this.cause = "fell to death";
+            //else if(cause instanceof Bleeding) this.cause = "bled to death";
+            //else if(cause instanceof Burning) this.cause = "burned to death";
+            //else this.cause = "died";
+            if(cause instanceof Mob) this.cause = Messages.get(TitleScene.class,"was_kill") + ((Mob)cause).name();
+            else if(cause instanceof Chasm) this.cause = Messages.get(TitleScene.class,"fell_kill");
+            else if(cause instanceof Bleeding) this.cause = Messages.get(TitleScene.class,"bleed_kill");
+            else if(cause instanceof Burning) this.cause = Messages.get(TitleScene.class,"buring_kill");
+            else if(cause instanceof Poison) this.cause = Messages.get(TitleScene.class,"poison_kill");
+            else if(cause instanceof Ooze) this.cause = Messages.get(TitleScene.class,"ooze_kill");
+            else if(cause instanceof Corrosion) this.cause = Messages.get(TitleScene.class,"corrosion_kill");
+            else if(cause instanceof Hunger) this.cause = Messages.get(TitleScene.class,"hunger_kill");
+            else this.cause = Messages.get(TitleScene.class,"die_kill");
         }
 
         public Death(String whom){
-            this.cause = " killed"+whom;
+            this.cause = Messages.get(TitleScene.class,"killedss")+whom;
         }
     }
 

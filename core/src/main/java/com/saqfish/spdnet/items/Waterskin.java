@@ -21,11 +21,14 @@
 
 package com.saqfish.spdnet.items;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.actors.buffs.Barrier;
 import com.saqfish.spdnet.actors.hero.Hero;
 import com.saqfish.spdnet.actors.hero.Talent;
 import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.sprites.ItemSpriteSheet;
 import com.saqfish.spdnet.utils.GLog;
 import com.watabou.noosa.audio.Sample;

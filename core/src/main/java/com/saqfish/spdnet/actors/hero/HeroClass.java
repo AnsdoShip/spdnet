@@ -28,17 +28,17 @@ import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.QuickSlot;
 import com.saqfish.spdnet.actors.hero.abilities.ArmorAbility;
 import com.saqfish.spdnet.actors.hero.abilities.huntress.NaturesPower;
-import com.saqfish.spdnet.actors.hero.abilities.huntress.SpiritHawk;
 import com.saqfish.spdnet.actors.hero.abilities.huntress.SpectralBlades;
-import com.saqfish.spdnet.actors.hero.abilities.mage.WildMagic;
-import com.saqfish.spdnet.actors.hero.abilities.mage.WarpBeacon;
+import com.saqfish.spdnet.actors.hero.abilities.huntress.SpiritHawk;
 import com.saqfish.spdnet.actors.hero.abilities.mage.ElementalBlast;
+import com.saqfish.spdnet.actors.hero.abilities.mage.WarpBeacon;
+import com.saqfish.spdnet.actors.hero.abilities.mage.WildMagic;
 import com.saqfish.spdnet.actors.hero.abilities.rogue.DeathMark;
 import com.saqfish.spdnet.actors.hero.abilities.rogue.ShadowClone;
 import com.saqfish.spdnet.actors.hero.abilities.rogue.SmokeBomb;
+import com.saqfish.spdnet.actors.hero.abilities.warrior.Endure;
 import com.saqfish.spdnet.actors.hero.abilities.warrior.HeroicLeap;
 import com.saqfish.spdnet.actors.hero.abilities.warrior.Shockwave;
-import com.saqfish.spdnet.actors.hero.abilities.warrior.Endure;
 import com.saqfish.spdnet.items.BrokenSeal;
 import com.saqfish.spdnet.items.Item;
 import com.saqfish.spdnet.items.Waterskin;
@@ -50,6 +50,7 @@ import com.saqfish.spdnet.items.potions.PotionOfHealing;
 import com.saqfish.spdnet.items.potions.PotionOfInvisibility;
 import com.saqfish.spdnet.items.potions.PotionOfLiquidFlame;
 import com.saqfish.spdnet.items.potions.PotionOfMindVision;
+import com.saqfish.spdnet.items.quest.ReadyGoKet;
 import com.saqfish.spdnet.items.scrolls.ScrollOfIdentify;
 import com.saqfish.spdnet.items.scrolls.ScrollOfLullaby;
 import com.saqfish.spdnet.items.scrolls.ScrollOfMagicMapping;
@@ -95,6 +96,9 @@ public enum HeroClass {
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
+
+		new ReadyGoKet().quantity(1).identify().collect();
+		//new PotionOfHealing().quantity(100).identify().collect();
 
 		new ScrollOfIdentify().identify();
 

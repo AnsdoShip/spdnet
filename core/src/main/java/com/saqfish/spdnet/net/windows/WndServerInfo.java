@@ -18,16 +18,20 @@
 
 package com.saqfish.spdnet.net.windows;
 
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.Settings;
 import com.saqfish.spdnet.net.ui.BlueButton;
 import com.saqfish.spdnet.net.ui.LabeledText;
 import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.scenes.PixelScene;
+import com.saqfish.spdnet.scenes.TitleScene;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
 import com.saqfish.spdnet.windows.IconTitle;
 import com.watabou.noosa.ColorBlock;
 
 import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+import static com.saqfish.spdnet.net.windows.WndChat.check;
+import static com.saqfish.spdnet.net.windows.WndChat.initialized;
 
 public class WndServerInfo extends NetWindow {
     private static final int WIDTH_P	    = 122;
@@ -53,26 +57,35 @@ public class WndServerInfo extends NetWindow {
 
         int maxWidth = PixelScene.landscape() ? WIDTH_L : WIDTH_P;
 
-        title = new IconTitle(NetIcons.get(NetIcons.GLOBE), "Server Connection");
+        title = new IconTitle(NetIcons.get(NetIcons.GLOBE), Messages.get(WndServerInfo.class,"spdnet"));
         title.setRect(0, 0, maxWidth, 20);
         add(title);
 
         float bottom = y;
         bottom = title.bottom();
 
-        host = PixelScene.renderTextBlock("Host: " +Settings.uri().toString(), 9);
+        host = PixelScene.renderTextBlock(Messages.get(WndServerInfo.class,"ip"), 9);
         host.maxWidth(maxWidth);
         host.setPos(0, bottom + GAP);
         add(host);
 
         bottom = host.bottom() + GAP;
 
-        status = new RenderedTextBlock(net().connected() ? "Connected" : "Disconnected", 9*zoom){
+        status = new RenderedTextBlock(net().connected() ? Messages.get(WndServerInfo.class,"connected") :
+                Messages.get(WndServerInfo.class,"noconnected"), 9*zoom){
             @Override
             public synchronized void update() {
                 super.update();
-                text(net().connected() ? "Connected" : "Disconnected");
+                text(net().connected() ? Messages.get(WndServerInfo.class,"connected") :
+                        Messages.get(WndServerInfo.class,"noconnected"));
                 hardlight(net().connected() ? 0x00FF00 : 0xFF0000);
+                //TODO 使用AtomicBoolean进行并发处理，以达到执行一次的目的！！！
+                if(net().connected() && check.compareAndSet( true,false)) {
+                    net().sender().sendChat("\n"+Messages.get(TitleScene.class, "join"));
+                }
+                if(!net().connected() && initialized.compareAndSet( false,true)) {
+                    //net().sender().sendChat("\n"+Messages.get(TitleScene.class, "leave"));
+                }
             }
         };
 
@@ -82,7 +95,7 @@ public class WndServerInfo extends NetWindow {
 
         bottom = status.bottom() + (GAP*3);
 
-        keyBtn = new BlueButton("Set Key") {
+        keyBtn = new BlueButton(Messages.get(WndServerInfo.class,"set-key")) {
             @Override
             protected void onClick() {
                 NetWindow.showKeyInput();
@@ -93,11 +106,12 @@ public class WndServerInfo extends NetWindow {
         keyBtn.setPos(0, bottom);
 
         float finalBottom = bottom;
-        connectBtn = new BlueButton("Connect") {
+        connectBtn = new BlueButton(Messages.get(WndServerInfo.class,"connected")) {
             @Override
             public synchronized void update() {
                 super.update();
-                text.text(net().connected() ? "Disconnect" : "Connect");
+                text.text(net().connected() ? Messages.get(WndServerInfo.class,"connecteds") :
+                        Messages.get(WndServerInfo.class,"noconnecteds"));
                 connectBtn.setRect(keyBtn.right(), finalBottom, maxWidth/2 , BTN_HEIGHT);
             }
 

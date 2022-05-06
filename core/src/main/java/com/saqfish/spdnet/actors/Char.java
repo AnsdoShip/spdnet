@@ -64,6 +64,7 @@ import com.saqfish.spdnet.actors.buffs.Vertigo;
 import com.saqfish.spdnet.actors.buffs.Vulnerable;
 import com.saqfish.spdnet.actors.buffs.Weakness;
 import com.saqfish.spdnet.actors.hero.Hero;
+import com.saqfish.spdnet.actors.hero.HeroClass;
 import com.saqfish.spdnet.actors.hero.HeroSubClass;
 import com.saqfish.spdnet.actors.hero.Talent;
 import com.saqfish.spdnet.actors.hero.abilities.rogue.DeathMark;
@@ -783,6 +784,16 @@ public abstract class Char extends Actor {
 				step = newPos;
 			}
 		}
+		//TODO 小型反作弊系统
+		/*
+		* 大于31级
+		* 金币大于20000
+		* 层数大于26层
+		* 血量大于666
+		* 伤害高于600
+		*
+		*
+		* */
 
 		if (Dungeon.level.map[pos] == Terrain.OPEN_DOOR) {
 			Door.leave( pos );

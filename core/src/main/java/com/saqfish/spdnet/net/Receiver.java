@@ -22,6 +22,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.items.Item;
+import com.saqfish.spdnet.items.wands.Wand;
+import com.saqfish.spdnet.items.weapon.melee.MagesStaff;
+import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.actor.Player;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Receive;
@@ -72,12 +75,10 @@ public class Receiver {
                 };
                 Emitter.Listener onLeave= args -> {
                         String nick = (String) args[0];
-                        String id = (String) args[1];
                         handleLeaveJoin(true, nick);
                 };
                 Emitter.Listener onJoin = args -> {
                         String nick = (String) args[0];
-                        String id = (String) args[1];
                         handleLeaveJoin(false, nick);
                 };
                 net.socket().once(Events.INIT, onInit);
@@ -120,7 +121,8 @@ public class Receiver {
 
         // Leave/Join
         public void handleLeaveJoin(boolean isLeaving,  String nick) {
-                GLog.p(nick + " has " + (isLeaving? "left": "joined"));
+                GLog.p(nick + (Messages.get(Receiver.class,"has"))+ (isLeaving? (Messages.get(Receiver.class,"join")): (Messages.get(
+                        Receiver.class,"left"))));
         }
 
         // Action handler
@@ -165,22 +167,22 @@ public class Receiver {
         // Item sharing handler
         public void handleTransfer(String json) {
                 try {
-                        Receive.Transfer i = mapper.readValue(json, Receive.Transfer.class);
-                        Class<?> k = Reflection.forNameUnhandled(addPkgName(i.className));
-
-                        Item item = (Item) Reflection.newInstance(k);
+                        Receive.Transfer i = (Receive.Transfer) this.mapper.readValue(json, Receive.Transfer.class);
+                        Item item = (Item) Reflection.newInstance(Reflection.forNameUnhandled(addPkgName(i.className)));
                         item.cursed = i.cursed;
                         item.level(i.level);
-                        if(i.identified) item.identify();
 
-                        item.quantity(i.count);
+                        if (i.identified) {
+                                item.identify();
+                        }
                         item.doPickUp(Dungeon.hero);
                         GameScene.pickUp(item, Dungeon.hero.pos);
 
-                        GLog.p("You received a "+item.name());
-                } catch (Exception ignored) { }
-
+                        GLog.p((Messages.get(Receiver.class,"received")) + item.name(), new Object[0]);
+                } catch (Exception e) {
+                }
         }
+
 
         // Chat handler
         public static class ChatMessage {
@@ -196,8 +198,8 @@ public class Receiver {
         }
 
         public void handleChat(String id,String nick,String message){
-                        messages.add(new ChatMessage(id, nick, message));
-                        newMessage = true;
+                messages.add(new ChatMessage(id, nick, message));
+                newMessage = true;
         }
 
         public void readMessages(){
