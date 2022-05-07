@@ -34,7 +34,8 @@ import com.saqfish.spdnet.ui.BuffIndicator;
 import com.saqfish.spdnet.utils.GLog;
 import com.watabou.utils.Bundle;
 
-public class Hunger extends Buff implements Hero.Doom {
+public class
+Hunger extends Buff implements Hero.Doom {
 
 	private static final float STEP	= 10f;
 

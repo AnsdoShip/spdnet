@@ -18,19 +18,13 @@
 
 package com.saqfish.spdnet.net.actor;
 
-import com.saqfish.spdnet.Badges;
 import com.saqfish.spdnet.Dungeon;
-import com.saqfish.spdnet.Statistics;
 import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.effects.particles.SmokeParticle;
-import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.sprites.PlayerSprite;
 import com.saqfish.spdnet.scenes.GameScene;
-import com.saqfish.spdnet.sprites.CharSprite;
-import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.DeviceCompat;
 
 public class Player extends Mob {
 
@@ -94,7 +88,7 @@ public class Player extends Mob {
 		destroy();
 		if( sprite != null) {
 			((PlayerSprite)sprite).leave();
-			sprite.emitter().burst( SmokeParticle.FACTORY, 6 );
+			//sprite.emitter().burst( SmokeParticle.FACTORY, 6 );
 		}
 	}
 
@@ -161,14 +155,15 @@ public class Player extends Mob {
 		if(Dungeon.level.players != null) {
 			for (Player op : Dungeon.level.players){
 				if(op.socketid().equals(id)) {
-					op.sprite.destroy();
-					op.destroy();
+					p.sprite.destroy();
+					p.destroy();
 				}
 			}
 			GameScene.add(p);
 			p.join();
 		}
 	}
+
 
 	public static void movePlayer(Player p, int pos, int pc){
 		if(p != null && p.sprite != null) {

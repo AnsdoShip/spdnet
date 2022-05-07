@@ -1,17 +1,15 @@
 package com.saqfish.spdnet.items.quest;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
 
 import com.saqfish.spdnet.Dungeon;
-import com.saqfish.spdnet.Statistics;
 import com.saqfish.spdnet.actors.buffs.Buff;
-import com.saqfish.spdnet.actors.buffs.Hunger;
-import com.saqfish.spdnet.actors.buffs.LockedFloor;
 import com.saqfish.spdnet.actors.hero.Hero;
 import com.saqfish.spdnet.actors.mobs.Mob;
-import com.saqfish.spdnet.items.Item;
 import com.saqfish.spdnet.items.artifacts.DriedRose;
 import com.saqfish.spdnet.items.artifacts.TimekeepersHourglass;
 import com.saqfish.spdnet.messages.Messages;
+import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.scenes.InterlevelScene;
 import com.saqfish.spdnet.scenes.TitleScene;
 import com.saqfish.spdnet.sprites.ItemSprite;
@@ -22,7 +20,7 @@ import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
-public class ReadyGoKet extends Item {
+public class ReadyGoKet extends TestItem {
 
     public static final float TIME_TO_USE = 5;
 
@@ -44,6 +42,15 @@ public class ReadyGoKet extends Item {
             return ItemSpriteSheet.TXZTWO;
         }
         return image;
+    }
+
+    @Override
+    public void doThrow( Hero hero ) {
+        if(net().connected()) {
+            GLog.w(Messages.get(ReadyGoKet.class,"why"));
+        } else {
+            GameScene.selectCell(thrower);
+        }
     }
 
     private static final String DEPTH = "depth";
@@ -78,15 +85,9 @@ public class ReadyGoKet extends Item {
 
         if (action == AC_PORT) {
 
-            if (Dungeon.bossLevel()) {
+            if (Dungeon.bossLevel()  || Dungeon.depth == 1) {
                 hero.spend(TIME_TO_USE);
                 GLog.w(Messages.get(TitleScene.class,"no_used"));
-                return;
-            }
-
-            if (hero.HP <= hero.HT/2 ) {
-                hero.spend(TIME_TO_USE);
-                GLog.w(Messages.get(TitleScene.class,"no_hp"));
                 return;
             }
 
@@ -109,9 +110,8 @@ public class ReadyGoKet extends Item {
                 InterlevelScene.mode = InterlevelScene.Mode.LETGO;
                 InterlevelScene.returnDepth = Dungeon.depth = 1;
             } else {
-                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                GLog.w(Messages.get(TitleScene.class, "no_used"));
             }
-
             InterlevelScene.returnDepth = returnDepth;
             InterlevelScene.returnPos = returnPos;
             Game.switchScene(InterlevelScene.class);
@@ -150,4 +150,3 @@ public class ReadyGoKet extends Item {
         return Messages.get(this, "desc");
     }
 }
-

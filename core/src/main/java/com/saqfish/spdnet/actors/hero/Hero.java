@@ -1813,8 +1813,8 @@ public class Hero extends Char {
 			net().sender().sendChat("\n"+Messages.get(TitleScene.class, "sb3"));
 		}
 
-		//TODO 大于31级或者小于0级
-		if(lvl >= 31 && HT!=1  || lvl < 0 && HT!=1 ){
+		//TODO 大于31级或者小于0级或者力量小于0
+		if(lvl >= 31 && HT!=1  || lvl < 0 && HT!=1 || STR < 0 ){
 			message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"kg1"),
 					"\n\n"+Messages.get(NetWindow.class,"errorkg1"));
 			HP=HT=1;

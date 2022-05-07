@@ -35,6 +35,7 @@ import com.saqfish.spdnet.items.bags.MagicalHolster;
 import com.saqfish.spdnet.items.bags.PotionBandolier;
 import com.saqfish.spdnet.items.bags.ScrollHolder;
 import com.saqfish.spdnet.items.bags.VelvetPouch;
+import com.saqfish.spdnet.items.bags.XieBag;
 import com.saqfish.spdnet.items.wands.Wand;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.scenes.PixelScene;
@@ -288,6 +289,8 @@ public class WndBag extends WndTabbed {
 			return Icons.get( Icons.WAND_HOLSTER );
 		} else if (bag instanceof PotionBandolier) {
 			return Icons.get( Icons.POTION_BANDOLIER );
+		} else if (bag instanceof XieBag) {
+			return Icons.get( Icons.LOST );
 		} else {
 			return Icons.get( Icons.BACKPACK );
 		}

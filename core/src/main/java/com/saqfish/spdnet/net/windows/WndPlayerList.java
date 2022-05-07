@@ -27,7 +27,6 @@ import com.saqfish.spdnet.scenes.PixelScene;
 import com.saqfish.spdnet.ui.IconButton;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
 import com.saqfish.spdnet.ui.ScrollPane;
-import com.saqfish.spdnet.ui.Window;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
@@ -40,7 +39,7 @@ public class WndPlayerList extends NetWindow {
 	private static final int WIDTH_L = 144;
 	private static final int HEIGHT	= 150;
 	private ScrollPane list;
-	private static final int VGAP = 15;
+	private static final int VGAP = 18;
 	private static final int HGAP = 8;
 	private Camera cam = camera();
 	public static class Roles {
@@ -54,7 +53,7 @@ public class WndPlayerList extends NetWindow {
 
 		float y = 2;
 
-		RenderedTextBlock titleLbl = PixelScene.renderTextBlock(Messages.get(WndPlayerList.class,"online"), 9);
+		RenderedTextBlock titleLbl = PixelScene.renderTextBlock(Messages.get(WndPlayerList.class,"online"), 7);
 		add(titleLbl);
 		titleLbl.setPos(VGAP/2, y);
 

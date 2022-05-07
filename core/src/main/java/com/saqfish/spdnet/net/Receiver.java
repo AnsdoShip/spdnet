@@ -21,9 +21,8 @@ package com.saqfish.spdnet.net;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saqfish.spdnet.Dungeon;
+import com.saqfish.spdnet.custom.utils.CustomGameSettings;
 import com.saqfish.spdnet.items.Item;
-import com.saqfish.spdnet.items.wands.Wand;
-import com.saqfish.spdnet.items.weapon.melee.MagesStaff;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.actor.Player;
 import com.saqfish.spdnet.net.events.Events;
@@ -132,9 +131,16 @@ public class Receiver {
                 try {
                         switch (type) {
                                 case Receive.MOVE:
-                                        Receive.Move m = mapper.readValue(json, Receive.Move.class);
-                                        Player.movePlayer(Player.getPlayer(m.id), m.pos, m.playerClass);
-                                        break;
+                                        if(Dungeon.depth == 1 || !CustomGameSettings.getSeedString().equals("")) {
+                                                Receive.Move m = mapper.readValue(json, Receive.Move.class);
+                                                Player.movePlayer(Player.getPlayer(m.id), m.pos, m.playerClass);
+                                                break;
+                                        } else {
+                                                Receive.Leave l = mapper.readValue(json, Receive.Leave.class);
+                                                player = Player.getPlayer(l.id);
+                                                if (player != null) player.leave();
+                                                break;
+                                        }
                                 case Receive.JOIN:
                                         join = mapper.readValue(json, Receive.Join.class);
                                         Player.addPlayer(join.id, join.nick, join.playerClass, join.pos, join.depth, join.items);

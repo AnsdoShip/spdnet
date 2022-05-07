@@ -18,6 +18,8 @@
 
 package com.saqfish.spdnet.net.windows;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.saqfish.spdnet.actors.hero.HeroClass;
 import com.saqfish.spdnet.messages.Messages;
@@ -37,16 +39,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
-
 
 public class WndNetRanking extends NetWindow {
 
     private static final int WIDTH_P = 120;
     private static final int WIDTH_L = 144;
-    private static final int HEIGHT	= 120;
+    private static final int HEIGHT	= 150;
 
-    private static final int VGAP = 5;
+    private static final int VGAP = 18;
     private static final int SMALL_HGAP = 5;
 
     public WndNetRanking(JSONObject recordsData) {
@@ -54,11 +54,11 @@ public class WndNetRanking extends NetWindow {
 
         float y = 2;
 
-        RenderedTextBlock winsLbl = PixelScene.renderTextBlock(Messages.get(WndNetRanking.class,"wins"), 7);
+        RenderedTextBlock winsLbl = PixelScene.renderTextBlock(Messages.get(WndNetRanking.class,"wins"), 5);
         add(winsLbl);
         winsLbl.setPos(width-winsLbl.width()-VGAP, y);
 
-        RenderedTextBlock nickLbl = PixelScene.renderTextBlock(Messages.get(WndNetRanking.class,"players"), 7);
+        RenderedTextBlock nickLbl = PixelScene.renderTextBlock(Messages.get(WndNetRanking.class,"players"), 6);
         add(nickLbl);
         nickLbl.setPos(VGAP, y);
 
