@@ -85,8 +85,8 @@ public class Player extends Mob {
 	}
 
 	public void leave(){
-		destroy();
 		if( sprite != null) {
+			destroy();
 			((PlayerSprite)sprite).leave();
 			//sprite.emitter().burst( SmokeParticle.FACTORY, 6 );
 		}
