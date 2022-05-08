@@ -235,7 +235,11 @@ public class StartScene extends PixelScene {
 				
 			}
 
+<<<<<<< Updated upstream
 			if(newButtonSlot) bg.hardlight(net().connected() ? 0x00FF00: 0xFF0000);
+=======
+			if(newButtonSlot) bg.hardlight(Net.w != null ? 0x00FF00: 0xFF0000);
+>>>>>>> Stashed changes
 
 			layout();
 		}
@@ -293,6 +297,7 @@ public class StartScene extends PixelScene {
 				GamesInProgress.curSlot = slot;
 				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 			} else {
+<<<<<<< Updated upstream
 				if(net().connected()){
 					ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
 				}else{
@@ -312,6 +317,24 @@ public class StartScene extends PixelScene {
 						//	}
 						//});
 
+=======
+				if(Net.w != null){
+					ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
+				}else{
+					if(!ShatteredPixelDungeon.net().connected()) NetWindow.error(Messages.get(StartScene.class,
+							"must-login"), Messages.get(StartScene.class,"info"));
+					else NetWindow.runWindow(new WndNetOptions(NetIcons.get(NetIcons.ALERT), "Seed Mismatch","Save seed: "+seed+"\nServer seed: " +ShatteredPixelDungeon.net().seed(), "Delete"){
+						@Override
+						protected void onSelect(int index) {
+							super.onSelect(index);
+							if (index ==0){
+								FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
+								GamesInProgress.setUnknown(slot);
+								ShatteredPixelDungeon.switchNoFade(StartScene.class);
+							}
+						}
+					});
+>>>>>>> Stashed changes
 				}
 			}
 		}

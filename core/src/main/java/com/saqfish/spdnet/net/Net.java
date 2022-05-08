@@ -105,7 +105,11 @@ public class Net {
     public void setupEvents(){
         Emitter.Listener onConnected = args -> {
             if(w != null) {
+<<<<<<< Updated upstream
                 Game.runOnRenderThread( () -> w.destroy());
+=======
+                //Game.runOnRenderThread( () -> w.destroy());
+>>>>>>> Stashed changes
                 message(Icons.get(Icons.NEWS), Messages.get(Net.class,"info"),
                         Messages.get(Net.class,"server-info"));
             }

@@ -269,7 +269,15 @@ public class Dungeon {
 		Level level;
 		switch (depth) {
 		case 1:
+<<<<<<< Updated upstream
 			case 2:
+=======
+			level = new SewerLevel();
+			break;
+		case 2:
+			level = new LastLevel();
+			break;
+>>>>>>> Stashed changes
 		case 3:
 		case 4:
 			level = new SewerLevel();

@@ -176,13 +176,19 @@ public class Receiver {
                         Item item = (Item) Reflection.newInstance(Reflection.forNameUnhandled(addPkgName(i.className)));
                         item.cursed = i.cursed;
                         item.level(i.level);
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
                         if (i.identified) {
                                 item.identify();
                         }
                         item.doPickUp(Dungeon.hero);
                         GameScene.pickUp(item, Dungeon.hero.pos);
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
                         GLog.p((Messages.get(Receiver.class,"received")) + item.name(), new Object[0]);
                 } catch (Exception e) {
                 }
