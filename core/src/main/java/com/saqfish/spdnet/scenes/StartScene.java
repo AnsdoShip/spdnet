@@ -30,10 +30,7 @@ import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.actors.hero.HeroSubClass;
 import com.saqfish.spdnet.journal.Journal;
 import com.saqfish.spdnet.messages.Messages;
-import com.saqfish.spdnet.net.Net;
-import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.windows.NetWindow;
-import com.saqfish.spdnet.net.windows.WndNetOptions;
 import com.saqfish.spdnet.net.windows.WndServerInfo;
 import com.saqfish.spdnet.ui.Archs;
 import com.saqfish.spdnet.ui.ExitButton;
@@ -47,7 +44,6 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Button;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.FileUtils;
 
 import java.io.IOException;
@@ -235,11 +231,8 @@ public class StartScene extends PixelScene {
 				
 			}
 
-<<<<<<< Updated upstream
 			if(newButtonSlot) bg.hardlight(net().connected() ? 0x00FF00: 0xFF0000);
-=======
-			if(newButtonSlot) bg.hardlight(Net.w != null ? 0x00FF00: 0xFF0000);
->>>>>>> Stashed changes
+
 
 			layout();
 		}
@@ -297,7 +290,6 @@ public class StartScene extends PixelScene {
 				GamesInProgress.curSlot = slot;
 				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 			} else {
-<<<<<<< Updated upstream
 				if(net().connected()){
 					ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
 				}else{
@@ -317,24 +309,6 @@ public class StartScene extends PixelScene {
 						//	}
 						//});
 
-=======
-				if(Net.w != null){
-					ShatteredPixelDungeon.scene().add( new WndGameInProgress(slot));
-				}else{
-					if(!ShatteredPixelDungeon.net().connected()) NetWindow.error(Messages.get(StartScene.class,
-							"must-login"), Messages.get(StartScene.class,"info"));
-					else NetWindow.runWindow(new WndNetOptions(NetIcons.get(NetIcons.ALERT), "Seed Mismatch","Save seed: "+seed+"\nServer seed: " +ShatteredPixelDungeon.net().seed(), "Delete"){
-						@Override
-						protected void onSelect(int index) {
-							super.onSelect(index);
-							if (index ==0){
-								FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
-								GamesInProgress.setUnknown(slot);
-								ShatteredPixelDungeon.switchNoFade(StartScene.class);
-							}
-						}
-					});
->>>>>>> Stashed changes
 				}
 			}
 		}

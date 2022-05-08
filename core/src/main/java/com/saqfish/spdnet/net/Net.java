@@ -27,12 +27,9 @@ import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Send;
-import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.windows.NetWindow;
-import com.saqfish.spdnet.net.windows.WndMotd;
 import com.saqfish.spdnet.net.windows.WndServerInfo;
 import com.saqfish.spdnet.scenes.GameScene;
-import com.saqfish.spdnet.scenes.StartScene;
 import com.saqfish.spdnet.ui.Icons;
 import com.saqfish.spdnet.utils.DungeonSeed;
 import com.watabou.noosa.Game;
@@ -105,11 +102,7 @@ public class Net {
     public void setupEvents(){
         Emitter.Listener onConnected = args -> {
             if(w != null) {
-<<<<<<< Updated upstream
                 Game.runOnRenderThread( () -> w.destroy());
-=======
-                //Game.runOnRenderThread( () -> w.destroy());
->>>>>>> Stashed changes
                 message(Icons.get(Icons.NEWS), Messages.get(Net.class,"info"),
                         Messages.get(Net.class,"server-info"));
             }

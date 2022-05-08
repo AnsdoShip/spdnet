@@ -18,11 +18,9 @@
 
 package com.saqfish.spdnet.net.windows;
 
+
 import com.saqfish.spdnet.actors.hero.HeroClass;
-<<<<<<< Updated upstream
 import com.saqfish.spdnet.messages.Messages;
-=======
->>>>>>> Stashed changes
 import com.saqfish.spdnet.net.Net;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.ui.NetIcons;
@@ -30,11 +28,7 @@ import com.saqfish.spdnet.scenes.PixelScene;
 import com.saqfish.spdnet.ui.IconButton;
 import com.saqfish.spdnet.ui.RenderedTextBlock;
 import com.saqfish.spdnet.ui.ScrollPane;
-<<<<<<< Updated upstream
 import com.watabou.noosa.Camera;
-=======
-import com.saqfish.spdnet.ui.Window;
->>>>>>> Stashed changes
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Button;
@@ -137,17 +131,11 @@ public class WndPlayerList extends NetWindow {
 		public PlayerEntry(Receive.Player player, int order){
 			this.order = order;
 			this.enabled = player.depth != null;
-
-<<<<<<< Updated upstream
 			int nickColor = hashCode()+1;
 			//int color = getRoleColor(player.role);
 			nick = PixelScene.renderTextBlock(player.nick, 6);
 			nick.hardlight(nickColor);
-=======
-			int color = getRoleColor(Window.TITLE_COLOR);
-			nick = PixelScene.renderTextBlock(player.nick, 11);
-			nick.hardlight(color);
->>>>>>> Stashed changes
+
 			add(nick);
 		}
 
