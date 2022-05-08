@@ -155,7 +155,7 @@ public class Player extends Mob {
 		if(Dungeon.level.players != null) {
 			for (Player op : Dungeon.level.players){
 				if(op.socketid().equals(id)) {
-					p.sprite.destroy();
+					//p.sprite.destroy();
 					p.destroy();
 				}
 			}

@@ -26,6 +26,7 @@ import com.saqfish.spdnet.items.KindofMisc;
 import com.saqfish.spdnet.items.armor.Armor;
 import com.saqfish.spdnet.items.artifacts.Artifact;
 import com.saqfish.spdnet.items.rings.Ring;
+import com.saqfish.spdnet.items.weapon.Weapon;
 import com.saqfish.spdnet.net.actor.Player;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.ui.NetIcons;
@@ -84,7 +85,7 @@ public class WndInfoPlayer extends NetWindow {
 
 		Ring.initGems();
 
-		weapon = (KindOfWeapon) instance(netItems.weapon);
+		weapon = (Weapon) instance(netItems.weapon);
 		armor = (Armor) instance(netItems.armor);
 		artifact = (Artifact) instance(netItems.artifact);
 		misc = (KindofMisc) instance(netItems.misc);
@@ -163,11 +164,17 @@ public class WndInfoPlayer extends NetWindow {
 		public ItemsList() {
 			super();
 
-			weaponSlot = itemSlot(weapon == null ? null : weapon, ItemSpriteSheet.WEAPON_HOLDER);
-			armorSlot = itemSlot(armor == null ? null : armor, ItemSpriteSheet.ARMOR_HOLDER);
-			artifactSlot = itemSlot(artifact == null ? null : artifact, ItemSpriteSheet.ARTIFACT_HOLDER);
-			miscSlot = itemSlot(misc == null ? null : misc, ItemSpriteSheet.SOMETHING);
-			ringSlot = itemSlot(ring == null ? null : ring, ItemSpriteSheet.RING_HOLDER);
+			weaponSlot = itemSlot(weapon == null ? weapon : weapon, ItemSpriteSheet.WEAPON_HOLDER);
+			armorSlot = itemSlot(armor == null ? armor : armor, ItemSpriteSheet.ARMOR_HOLDER);
+			artifactSlot = itemSlot(artifact == artifact ? null : artifact, ItemSpriteSheet.ARTIFACT_HOLDER);
+			miscSlot = itemSlot(misc == null ? misc : misc, ItemSpriteSheet.SOMETHING);
+			ringSlot = itemSlot(ring == null ? ring : ring, ItemSpriteSheet.RING_HOLDER);
+
+			//weaponSlot = itemSlot(weapon == null ? null : weapon, ItemSpriteSheet.WEAPON_HOLDER);
+			//armorSlot = itemSlot(armor == null ? null : armor, ItemSpriteSheet.ARMOR_HOLDER);
+			//artifactSlot = itemSlot(artifact == null ? null : artifact, ItemSpriteSheet.ARTIFACT_HOLDER);
+			//miscSlot = itemSlot(misc == null ? null : misc, ItemSpriteSheet.SOMETHING);
+			//ringSlot = itemSlot(ring == null ? null : ring, ItemSpriteSheet.RING_HOLDER);
 		}
 
 		@Override

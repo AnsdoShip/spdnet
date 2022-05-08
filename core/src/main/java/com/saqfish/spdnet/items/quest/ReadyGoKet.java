@@ -5,8 +5,6 @@ import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.hero.Hero;
-import com.saqfish.spdnet.actors.mobs.Mob;
-import com.saqfish.spdnet.items.artifacts.DriedRose;
 import com.saqfish.spdnet.items.artifacts.TimekeepersHourglass;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.scenes.GameScene;
@@ -25,7 +23,7 @@ public class ReadyGoKet extends TestItem {
     public static final float TIME_TO_USE = 5;
 
     public static final String AC_PORT = "传送";
-
+    public static final String AC_READ = "read";
 
     private int returnDepth = 0;
     private int returnPos;
@@ -76,7 +74,7 @@ public class ReadyGoKet extends TestItem {
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions(hero);
         actions.add(AC_PORT);
-
+        actions.add(AC_READ);
         return actions;
     }
 
@@ -93,6 +91,27 @@ public class ReadyGoKet extends TestItem {
 
         }
 
+        if (action == AC_READ) {
+
+            if (Dungeon.depth != 27) {
+                hero.spend(TIME_TO_USE);
+                GLog.w(Messages.get(TitleScene.class,"no_read"));
+                return;
+            }
+
+        }
+
+        if (action == AC_READ) {
+            Buff buff = Dungeon.hero
+                    .buff(TimekeepersHourglass.timeFreeze.class);
+            if (buff != null)
+                buff.detach();
+                InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+            InterlevelScene.returnDepth = returnDepth;
+            InterlevelScene.returnPos = returnPos;
+            Game.switchScene(InterlevelScene.class);
+        }
+
         if (action == AC_PORT) {
 
             Buff buff = Dungeon.hero
@@ -100,9 +119,6 @@ public class ReadyGoKet extends TestItem {
             if (buff != null)
                 buff.detach();
 
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
-                if (mob instanceof DriedRose.GhostHero)
-                    mob.destroy();
             if (Dungeon.depth<27){
                 returnDepth = Dungeon.depth;
                 returnPos = hero.pos;

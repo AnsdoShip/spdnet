@@ -130,16 +130,16 @@ public class Receiver {
                 try {
                         switch (type) {
                                 case Receive.MOVE:
-                                        if(Dungeon.depth == 27 ) {
-                                                //Receive.Move m = mapper.readValue(json, Receive.Move.class);
-                                                //Player.movePlayer(Player.getPlayer(m.id), m.pos, m.playerClass);
-                                                //break;
-                                        } else {
-                                                Receive.Leave l = mapper.readValue(json, Receive.Leave.class);
-                                                player = Player.getPlayer(l.id);
-                                                if (player != null) player.leave();
+                                        //if(Dungeon.depth == 27 ) {
+                                                Receive.Move m = mapper.readValue(json, Receive.Move.class);
+                                                Player.movePlayer(Player.getPlayer(m.id), m.pos, m.playerClass);
                                                 break;
-                                        }
+                                        //} else {
+                                        //        Receive.Leave l = mapper.readValue(json, Receive.Leave.class);
+                                        //        player = Player.getPlayer(l.id);
+                                        //        if (player != null) player.leave();
+                                        //        break;
+                                        //}
                                 case Receive.JOIN:
                                         join = mapper.readValue(json, Receive.Join.class);
                                         Player.addPlayer(join.id, join.nick, join.playerClass, join.pos, join.depth, join.items);

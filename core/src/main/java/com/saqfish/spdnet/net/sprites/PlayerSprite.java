@@ -19,15 +19,11 @@
 package com.saqfish.spdnet.net.sprites;
 
 import com.saqfish.spdnet.Assets;
-import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.actors.Char;
-import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.net.actor.Player;
-import com.saqfish.spdnet.scenes.GameScene;
 import com.saqfish.spdnet.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.tweeners.AlphaTweener;
-import com.watabou.noosa.tweeners.PosTweener;
 
 public class PlayerSprite extends MobSprite {
 
@@ -124,8 +120,9 @@ public class PlayerSprite extends MobSprite {
 				return Assets.Sprites.ROGUE;
 			case 3:
 				return Assets.Sprites.HUNTRESS;
+			default:
+				return Assets.Sprites.BEE;
 		}
-		return Assets.Sprites.ROGUE;
 	}
 
 	@Override
