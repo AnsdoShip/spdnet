@@ -30,10 +30,8 @@ import com.saqfish.spdnet.actors.Char;
 import com.saqfish.spdnet.actors.buffs.Amok;
 import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.buffs.ChampionEnemy;
-import com.saqfish.spdnet.actors.buffs.Healing;
 import com.saqfish.spdnet.actors.hero.Hero;
 import com.saqfish.spdnet.actors.mobs.Mob;
-import com.saqfish.spdnet.effects.Flare;
 import com.saqfish.spdnet.items.weapon.Weapon;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.ui.NetIcons;
@@ -67,7 +65,7 @@ public class MeleeWeapon extends Weapon {
 		int damage = augment.damageFactor(super.damageRoll( owner ));
 
 
-		if(damage >= 200  || damage < 0){
+		if(damage >= 600  || damage < 0){
 			for (Mob mob : Dungeon.level.mobs) {
 				switch (Random.Int(7)) {
 					case 0:

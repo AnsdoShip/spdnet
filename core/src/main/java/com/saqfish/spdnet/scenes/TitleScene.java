@@ -21,6 +21,9 @@
 
 package com.saqfish.spdnet.scenes;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+import static com.saqfish.spdnet.net.windows.WndChat.initialized;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Chrome;
@@ -32,13 +35,10 @@ import com.saqfish.spdnet.effects.Fireball;
 import com.saqfish.spdnet.messages.Languages;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.Receiver;
-import com.saqfish.spdnet.net.Settings;
 import com.saqfish.spdnet.net.events.Events;
 import com.saqfish.spdnet.net.events.Receive;
-import com.saqfish.spdnet.net.events.Send;
 import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.windows.NetWindow;
-import com.saqfish.spdnet.net.windows.WndChat;
 import com.saqfish.spdnet.net.windows.WndServerInfo;
 import com.saqfish.spdnet.services.news.News;
 import com.saqfish.spdnet.services.updates.AvailableUpdateData;
@@ -58,18 +58,12 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.DeviceCompat;
-import com.watabou.utils.PlatformSupport;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
-import static com.saqfish.spdnet.net.windows.NetWindow.message;
-import static com.saqfish.spdnet.net.windows.WndChat.initialized;
-import static com.watabou.noosa.Game.platform;
 
 public class TitleScene extends PixelScene {
 
@@ -300,11 +294,22 @@ public class TitleScene extends PixelScene {
 
 		StyledButton btnAbout = new StyledButton(GREY_TR, Messages.get(this, "about")){
 			@Override
+			public void update() {
+				if (net().connected()) {
+					textColor(Window.X_COLOR);
+					icon(NetIcons.get(NetIcons.GLOBE));
+					icon().scale.set(PixelScene.align(0.85f));
+				} else {
+					textColor(Window.SHPX_COLOR);
+					icon(Icons.get(Icons.SHPX));
+				}
+			}
+			@Override
 			protected void onClick() {
 				ShatteredPixelDungeon.switchScene( AboutScene.class );
 			}
 		};
-		btnAbout.icon(Icons.get(Icons.SHPX));
+		btnAbout.icon(NetIcons.get(NetIcons.GLOBE));
 		add(btnAbout);
 		
 		final int BTN_HEIGHT = 20;

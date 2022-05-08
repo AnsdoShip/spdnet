@@ -23,6 +23,7 @@ package com.saqfish.spdnet.scenes;
 
 import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.effects.Flare;
+import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.ui.Archs;
 import com.saqfish.spdnet.ui.ExitButton;
 import com.saqfish.spdnet.ui.Icons;
@@ -64,12 +65,30 @@ public class AboutScene extends PixelScene {
 		content.clear();
 
 		//*** Shattered Pixel Dungeon Credits ***
-
+		String githublink = "https://github.com/AnsdoShip/spdnet";
 		String shpxLink = "https://ShatteredPixel.com";
 		//tracking codes, so that the website knows where this pageview came from
 		shpxLink += "?utm_source=shatteredpd";
 		shpxLink += "&utm_medium=about_page";
 		shpxLink += "&utm_campaign=ingame_link";
+
+		CreditsBlock net = new CreditsBlock(true, Window.X_COLOR,
+				"SPDNET",
+				NetIcons.GLOBE.get(),
+				"Developed by: _Saqfish_,_JDSA-Ling_,_Tianscar_\nServer-Register-Support:_Catand_\nBased on Shattered" +
+						" " +
+						"Pixel " +
+						"Dungeon's" +
+						" open " +
+						"source",
+				"Github SoureCode",
+				githublink);
+		if (landscape()){
+			net.setRect((w - fullWidth)/2f - 6, 10, 120, 0);
+		} else {
+			net.setRect((w - fullWidth)/2f, 6, 120, 0);
+		}
+		content.add(net);
 
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
 				"Shattered Pixel Dungeon",
@@ -78,9 +97,9 @@ public class AboutScene extends PixelScene {
 				"ShatteredPixel.com",
 				shpxLink);
 		if (landscape()){
-			shpx.setRect((w - fullWidth)/2f - 6, 10, 120, 0);
+			shpx.setRect(net.right() - colWidth, net.bottom()+2, colWidth, 0);
 		} else {
-			shpx.setRect((w - fullWidth)/2f, 6, 120, 0);
+			shpx.setRect(net.left(), net.bottom() + 8, colWidth, 0);
 		}
 		content.add(shpx);
 

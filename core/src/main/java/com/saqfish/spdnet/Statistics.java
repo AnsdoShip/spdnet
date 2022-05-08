@@ -27,6 +27,7 @@ public class Statistics {
 	
 	public static int goldCollected;
 	public static int deepestFloor;
+	public static int realdeepestFloor;
 	public static int enemiesSlain;
 	public static int foodEaten;
 	public static int potionsCooked;
@@ -41,7 +42,7 @@ public class Statistics {
 	public static int spawnersAlive;
 	
 	public static float duration;
-	
+
 	public static boolean qualifiedForNoKilling = false;
 	public static boolean completedWithNoKilling = false;
 	
@@ -51,6 +52,7 @@ public class Statistics {
 		
 		goldCollected	= 0;
 		deepestFloor	= -1;
+		realdeepestFloor = 0;
 		enemiesSlain	= 0;
 		foodEaten		= 0;
 		potionsCooked	= 0;
@@ -74,6 +76,7 @@ public class Statistics {
 	private static final String GOLD		= "score";
 	private static final String DEEPEST		= "maxDepth";
 	private static final String SLAIN		= "enemiesSlain";
+	private static final String REALDEEPEST = "maxDepthReal";
 	private static final String FOOD		= "foodEaten";
 	private static final String ALCHEMY		= "potionsCooked";
 	private static final String PIRANHAS	= "priranhas";
@@ -99,7 +102,7 @@ public class Statistics {
 		bundle.put( ALCHEMY,	potionsCooked );
 		bundle.put( PIRANHAS,	piranhasKilled );
 		bundle.put( ANKHS,		ankhsUsed );
-		
+		bundle.put(REALDEEPEST, realdeepestFloor);
 		bundle.put( UPGRADES,   upgradesUsed );
 		bundle.put( SNEAKS,		sneakAttacks );
 		bundle.put( THROWN,		thrownAssists );
@@ -117,6 +120,7 @@ public class Statistics {
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );
 		enemiesSlain	= bundle.getInt( SLAIN );
+		realdeepestFloor = bundle.getInt(REALDEEPEST);
 		foodEaten		= bundle.getInt( FOOD );
 		potionsCooked	= bundle.getInt( ALCHEMY );
 		piranhasKilled	= bundle.getInt( PIRANHAS );

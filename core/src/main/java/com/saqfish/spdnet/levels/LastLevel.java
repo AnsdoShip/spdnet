@@ -89,7 +89,7 @@ public class LastLevel extends Level {
 		
 		setSize(16, 64);
 		Arrays.fill( map, Terrain.CHASM );
-
+		this.exit = this.width * 28 + 28;
 		final int MID = width/2;
 
 		Painter.fill( this, 0, height-1, width, 1, Terrain.WALL );

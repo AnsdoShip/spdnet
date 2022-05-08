@@ -51,8 +51,6 @@ import com.saqfish.spdnet.items.potions.PotionOfHealing;
 import com.saqfish.spdnet.items.potions.PotionOfInvisibility;
 import com.saqfish.spdnet.items.potions.PotionOfLiquidFlame;
 import com.saqfish.spdnet.items.potions.PotionOfMindVision;
-import com.saqfish.spdnet.items.potions.PotionOfStrength;
-import com.saqfish.spdnet.items.quest.LevelTeleporter;
 import com.saqfish.spdnet.items.quest.ReadyGoKet;
 import com.saqfish.spdnet.items.scrolls.ScrollOfIdentify;
 import com.saqfish.spdnet.items.scrolls.ScrollOfLullaby;
@@ -100,13 +98,8 @@ public enum HeroClass {
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 
-		new LevelTeleporter().quantity(1).identify().collect();
 		new XieBag().quantity(1).identify().collect();
 		new ReadyGoKet().quantity(1).identify().collect();
-
-		new PotionOfStrength().collect();
-		new ScrollOfUpgrade().collect();
-
 
 		new ScrollOfIdentify().identify();
 

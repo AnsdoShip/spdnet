@@ -81,7 +81,7 @@ public class ReadyGoKet extends TestItem {
     }
 
     @Override
-    public void execute(Hero hero, String action) {
+    public void execute(Hero hero, String action){
 
         if (action == AC_PORT) {
 
@@ -103,21 +103,20 @@ public class ReadyGoKet extends TestItem {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
                 if (mob instanceof DriedRose.GhostHero)
                     mob.destroy();
-            if (Dungeon.depth!=1 ){
-
+            if (Dungeon.depth<27){
                 returnDepth = Dungeon.depth;
                 returnPos = hero.pos;
                 InterlevelScene.mode = InterlevelScene.Mode.LETGO;
-                InterlevelScene.returnDepth = Dungeon.depth = 1;
             } else {
-                GLog.w(Messages.get(TitleScene.class, "no_used"));
+                InterlevelScene.mode = InterlevelScene.Mode.RETURN;
             }
+
+
             InterlevelScene.returnDepth = returnDepth;
             InterlevelScene.returnPos = returnPos;
             Game.switchScene(InterlevelScene.class);
 
         } else {
-
             super.execute(hero, action);
 
         }

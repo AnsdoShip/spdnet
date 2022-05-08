@@ -38,7 +38,6 @@ import com.saqfish.spdnet.actors.mobs.npcs.Imp;
 import com.saqfish.spdnet.actors.mobs.npcs.Wandmaker;
 import com.saqfish.spdnet.custom.utils.CustomGameSettings;
 import com.saqfish.spdnet.custom.utils.SeedUtil;
-import com.saqfish.spdnet.items.Ankh;
 import com.saqfish.spdnet.items.Generator;
 import com.saqfish.spdnet.items.Heap;
 import com.saqfish.spdnet.items.Item;
@@ -49,16 +48,15 @@ import com.saqfish.spdnet.items.scrolls.Scroll;
 import com.saqfish.spdnet.items.wands.WandOfRegrowth;
 import com.saqfish.spdnet.items.wands.WandOfWarding;
 import com.saqfish.spdnet.journal.Notes;
+import com.saqfish.spdnet.levels.CavesBossLevel;
 import com.saqfish.spdnet.levels.CavesLevel;
+import com.saqfish.spdnet.levels.CityBossLevel;
 import com.saqfish.spdnet.levels.CityLevel;
 import com.saqfish.spdnet.levels.DeadEndLevel;
+import com.saqfish.spdnet.levels.HallsBossLevel;
 import com.saqfish.spdnet.levels.HallsLevel;
 import com.saqfish.spdnet.levels.LastLevel;
-import com.saqfish.spdnet.levels.LastShopLevel;
 import com.saqfish.spdnet.levels.Level;
-import com.saqfish.spdnet.levels.CavesBossLevel;
-import com.saqfish.spdnet.levels.CityBossLevel;
-import com.saqfish.spdnet.levels.HallsBossLevel;
 import com.saqfish.spdnet.levels.PrisonBossLevel;
 import com.saqfish.spdnet.levels.PrisonLevel;
 import com.saqfish.spdnet.levels.ReloadLevel;
@@ -83,7 +81,6 @@ import com.watabou.utils.SparseArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 public class Dungeon {
@@ -234,15 +231,22 @@ public class Dungeon {
 		return (challenges & mask) != 0;
 	}
 
-	public static Level DT() {
+	public static Level DT(){
+
 		Dungeon.level = null;
 		Actor.clear();
-		switch (depth) {
-			case 1:
-				level = new ReloadLevel();
-				break;
-		}
+		depth = 27;
+		if (depth > Statistics.realdeepestFloor) {
+			Statistics.realdeepestFloor = depth;}
+
+		Level level;
+		level = new ReloadLevel();
+
 		level.create();
+
+		Statistics.qualifiedForNoKilling = !bossLevel();
+		if (Statistics.deepestFloor>24){Statistics.deepestFloor = depth;}
+
 		return level;
 	}
 	
@@ -265,8 +269,6 @@ public class Dungeon {
 		Level level;
 		switch (depth) {
 		case 1:
-			level = new ReloadLevel();
-			break;
 			case 2:
 		case 3:
 		case 4:
@@ -314,6 +316,9 @@ public class Dungeon {
 		case 26:
 			level = new LastLevel();
 			break;
+			case 27:
+				level = new ReloadLevel();
+				break;
 		default:
 			level = new DeadEndLevel();
 			Statistics.deepestFloor--;
@@ -538,11 +543,11 @@ public class Dungeon {
 			ShatteredPixelDungeon.reportException(e);
 		}
 	}
-	
+
 	public static void saveLevel( int save ) throws IOException {
 		Bundle bundle = new Bundle();
 		bundle.put( LEVEL, level );
-		
+
 		FileUtils.bundleToFile(GamesInProgress.depthFile( save, depth), bundle);
 	}
 	

@@ -21,6 +21,9 @@
 
 package com.saqfish.spdnet.actors.hero;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+import static com.saqfish.spdnet.net.windows.NetWindow.message;
+
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Badges;
 import com.saqfish.spdnet.Bones;
@@ -41,7 +44,6 @@ import com.saqfish.spdnet.actors.buffs.Bless;
 import com.saqfish.spdnet.actors.buffs.Blindness;
 import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.buffs.Burning;
-import com.saqfish.spdnet.actors.buffs.ChampionEnemy;
 import com.saqfish.spdnet.actors.buffs.Combo;
 import com.saqfish.spdnet.actors.buffs.Cripple;
 import com.saqfish.spdnet.actors.buffs.Drowsy;
@@ -64,15 +66,12 @@ import com.saqfish.spdnet.actors.mobs.KaDied;
 import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.actors.mobs.Monk;
 import com.saqfish.spdnet.actors.mobs.Snake;
-import com.saqfish.spdnet.actors.mobs.Warlock;
-import com.saqfish.spdnet.actors.mobs.Wraith;
 import com.saqfish.spdnet.effects.CheckedCell;
 import com.saqfish.spdnet.effects.SpellSprite;
 import com.saqfish.spdnet.items.Amulet;
 import com.saqfish.spdnet.items.Ankh;
 import com.saqfish.spdnet.items.Dewdrop;
 import com.saqfish.spdnet.items.EquipableItem;
-import com.saqfish.spdnet.items.Gold;
 import com.saqfish.spdnet.items.Heap;
 import com.saqfish.spdnet.items.Heap.Type;
 import com.saqfish.spdnet.items.Item;
@@ -158,10 +157,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
-import static com.saqfish.spdnet.net.windows.NetWindow.message;
-import static com.saqfish.spdnet.net.windows.WndChat.initialized;
 
 public class Hero extends Char {
 

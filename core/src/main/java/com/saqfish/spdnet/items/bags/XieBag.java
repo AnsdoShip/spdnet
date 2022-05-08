@@ -29,7 +29,7 @@ public class XieBag extends Bag {
     }
 
     public int capacity(){
-        return 2;
+        return 1;
     }
 
     @Override

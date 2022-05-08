@@ -21,7 +21,6 @@ package com.saqfish.spdnet.net;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.saqfish.spdnet.Dungeon;
-import com.saqfish.spdnet.custom.utils.CustomGameSettings;
 import com.saqfish.spdnet.items.Item;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.actor.Player;
@@ -131,10 +130,10 @@ public class Receiver {
                 try {
                         switch (type) {
                                 case Receive.MOVE:
-                                        if(Dungeon.depth == 1 || !CustomGameSettings.getSeedString().equals("")) {
-                                                Receive.Move m = mapper.readValue(json, Receive.Move.class);
-                                                Player.movePlayer(Player.getPlayer(m.id), m.pos, m.playerClass);
-                                                break;
+                                        if(Dungeon.depth == 27 ) {
+                                                //Receive.Move m = mapper.readValue(json, Receive.Move.class);
+                                                //Player.movePlayer(Player.getPlayer(m.id), m.pos, m.playerClass);
+                                                //break;
                                         } else {
                                                 Receive.Leave l = mapper.readValue(json, Receive.Leave.class);
                                                 player = Player.getPlayer(l.id);

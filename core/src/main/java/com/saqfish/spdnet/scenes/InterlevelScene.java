@@ -21,6 +21,8 @@
 
 package com.saqfish.spdnet.scenes;
 
+import static com.saqfish.spdnet.Dungeon.saveLevel;
+
 import com.saqfish.spdnet.Assets;
 import com.saqfish.spdnet.Chrome;
 import com.saqfish.spdnet.Dungeon;
@@ -32,7 +34,6 @@ import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.items.LostBackpack;
 import com.saqfish.spdnet.levels.Level;
-import com.saqfish.spdnet.levels.ReloadLevel;
 import com.saqfish.spdnet.levels.features.Chasm;
 import com.saqfish.spdnet.levels.rooms.special.SpecialRoom;
 import com.saqfish.spdnet.messages.Messages;
@@ -54,7 +55,6 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.NoosaScriptNoLighting;
 import com.watabou.noosa.SkinnedBlock;
-import com.watabou.utils.DeviceCompat;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -62,7 +62,7 @@ import java.io.IOException;
 public class InterlevelScene extends PixelScene {
 	
 	//slow fade on entering a new region
-	private static final float SLOW_FADE = 1f; //.33 in, 1.33 steady, .33 out, 2 seconds total
+	private static final float SLOW_FADE = 0.75f; //.33 in, 1.33 steady, .33 out, 2 seconds total
 	//norm fade when loading, falling, returning, or descending to a new floor
 	private static final float NORM_FADE = 0.67f; //.33 in, .67 steady, .33 out, 1.33 seconds total
 	//fast fade when ascending, or descending to a floor you've been on
@@ -304,16 +304,17 @@ public class InterlevelScene extends PixelScene {
 	private void portal(int branch) throws IOException {
 
 		Actor.fixTime();
-		//\\Dungeon.saveLevel();
+		saveLevel( GamesInProgress.curSlot );
+
 		Level level;
 		switch(branch){
 			case 1:
-				level = Dungeon.DT();
+				level=Dungeon.DT();
 				break;
 			default:
 				level = Dungeon.newLevel();
 		}
-		Dungeon.switchLevel(level, level.entrance);
+		Dungeon.switchLevel( level, level.entrance );
 	}
 	
 	@Override
