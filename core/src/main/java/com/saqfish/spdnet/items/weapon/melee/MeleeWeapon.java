@@ -32,11 +32,13 @@ import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.buffs.ChampionEnemy;
 import com.saqfish.spdnet.actors.hero.Hero;
 import com.saqfish.spdnet.actors.mobs.Mob;
+import com.saqfish.spdnet.items.artifacts.DriedRose;
 import com.saqfish.spdnet.items.weapon.Weapon;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.net.ui.NetIcons;
 import com.saqfish.spdnet.net.windows.NetWindow;
 import com.saqfish.spdnet.scenes.TitleScene;
+import com.saqfish.spdnet.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
@@ -66,19 +68,25 @@ public class MeleeWeapon extends Weapon {
 
 
 		if(damage >= 600  || damage < 0){
+
 			for (Mob mob : Dungeon.level.mobs) {
-				switch (Random.Int(7)) {
-					case 0:
-					default:
-						Buff.affect(mob, ChampionEnemy.Blazing.class);
-						Buff.affect(mob, ChampionEnemy.Projecting.class);
-						Buff.affect(mob, ChampionEnemy.AntiMagic.class);
-						Buff.affect(mob, ChampionEnemy.Giant.class);
-						Buff.affect(mob, ChampionEnemy.Blessed.class);
-						Buff.affect(mob, ChampionEnemy.Growing.class);
-				}
-				if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
-					Buff.prolong(mob, Amok.class, 5f);
+				if (mob instanceof DriedRose.GhostHero) {
+					GLog.n( Messages.get( this, "sad"));
+					((DriedRose.GhostHero) mob).flee();
+				} else {
+					switch (Random.Int(7)) {
+						case 0:
+						default:
+							Buff.affect(mob, ChampionEnemy.Blazing.class);
+							Buff.affect(mob, ChampionEnemy.Projecting.class);
+							Buff.affect(mob, ChampionEnemy.AntiMagic.class);
+							Buff.affect(mob, ChampionEnemy.Giant.class);
+							Buff.affect(mob, ChampionEnemy.Blessed.class);
+							Buff.affect(mob, ChampionEnemy.Growing.class);
+					}
+					if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
+						Buff.prolong(mob, Amok.class, 5f);
+					}
 				}
 			}
 			//new Flare( 5, 32 ).color( 0xFF0000, true ).show( curUser.sprite, 2f );

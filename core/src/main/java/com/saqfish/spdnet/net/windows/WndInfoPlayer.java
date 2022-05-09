@@ -21,12 +21,10 @@ package com.saqfish.spdnet.net.windows;
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.actors.hero.Hero;
 import com.saqfish.spdnet.items.Item;
-import com.saqfish.spdnet.items.KindOfWeapon;
 import com.saqfish.spdnet.items.KindofMisc;
 import com.saqfish.spdnet.items.armor.Armor;
 import com.saqfish.spdnet.items.artifacts.Artifact;
 import com.saqfish.spdnet.items.rings.Ring;
-import com.saqfish.spdnet.items.weapon.Weapon;
 import com.saqfish.spdnet.net.actor.Player;
 import com.saqfish.spdnet.net.events.Receive;
 import com.saqfish.spdnet.net.ui.NetIcons;
@@ -56,7 +54,6 @@ public class WndInfoPlayer extends NetWindow {
 	private ColorBlock sep;
 	private ItemsList items;
 
-	KindOfWeapon weapon;
 	Armor armor;
 	Artifact artifact;
 	KindofMisc misc;
@@ -85,7 +82,6 @@ public class WndInfoPlayer extends NetWindow {
 
 		Ring.initGems();
 
-		weapon = (Weapon) instance(netItems.weapon);
 		armor = (Armor) instance(netItems.armor);
 		artifact = (Artifact) instance(netItems.artifact);
 		misc = (KindofMisc) instance(netItems.misc);
@@ -164,7 +160,7 @@ public class WndInfoPlayer extends NetWindow {
 		public ItemsList() {
 			super();
 
-			weaponSlot = itemSlot(weapon == null ? weapon : weapon, ItemSpriteSheet.WEAPON_HOLDER);
+
 			armorSlot = itemSlot(armor == null ? armor : armor, ItemSpriteSheet.ARMOR_HOLDER);
 			artifactSlot = itemSlot(artifact == artifact ? null : artifact, ItemSpriteSheet.ARTIFACT_HOLDER);
 			miscSlot = itemSlot(misc == null ? misc : misc, ItemSpriteSheet.SOMETHING);
@@ -181,9 +177,9 @@ public class WndInfoPlayer extends NetWindow {
 		protected void layout() {
 			super.layout();
 
-			weaponSlot.setRect(x, y, ITEM_WIDTH, ITEM_HEIGHT);
-			add(weaponSlot);
-			x += ITEM_WIDTH;
+			//weaponSlot.setRect(x, y, ITEM_WIDTH, ITEM_HEIGHT);
+			//add(weaponSlot);
+			//x += ITEM_WIDTH;
 
 			armorSlot.setRect(x, y, ITEM_WIDTH, ITEM_HEIGHT);
 			add(armorSlot);

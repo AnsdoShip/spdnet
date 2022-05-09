@@ -165,7 +165,7 @@ public class Player extends Mob {
 	}
 
 
-	public static void movePlayer(Player p, int pos, int pc){
+	public static void movePlayer(Player p, int pos,int pc){
 		if(p != null && p.sprite != null) {
 			if(p.sprite.parent == null){
 				p.sprite.destroy();

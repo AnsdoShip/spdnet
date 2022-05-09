@@ -39,6 +39,7 @@ import com.saqfish.spdnet.actors.mobs.npcs.DirectableAlly;
 import com.saqfish.spdnet.actors.mobs.npcs.Ghost;
 import com.saqfish.spdnet.effects.CellEmitter;
 import com.saqfish.spdnet.effects.Speck;
+import com.saqfish.spdnet.effects.particles.ElmoParticle;
 import com.saqfish.spdnet.effects.particles.ShaftParticle;
 import com.saqfish.spdnet.items.Item;
 import com.saqfish.spdnet.items.armor.Armor;
@@ -50,6 +51,7 @@ import com.saqfish.spdnet.items.scrolls.ScrollOfRetribution;
 import com.saqfish.spdnet.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.saqfish.spdnet.items.weapon.Weapon;
 import com.saqfish.spdnet.items.weapon.melee.MeleeWeapon;
+import com.saqfish.spdnet.journal.Notes;
 import com.saqfish.spdnet.messages.Messages;
 import com.saqfish.spdnet.scenes.CellSelector;
 import com.saqfish.spdnet.scenes.GameScene;
@@ -717,6 +719,15 @@ public class DriedRose extends Artifact {
 		public void die(Object cause) {
 			sayDefeated();
 			super.die(cause);
+		}
+
+		public void flee() {
+			destroy();
+
+			Notes.remove(Notes.Landmark.SHOP);
+
+			sprite.killAndErase();
+			CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
 		}
 
 		@Override

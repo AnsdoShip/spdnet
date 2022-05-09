@@ -44,6 +44,7 @@ import com.saqfish.spdnet.actors.buffs.Bless;
 import com.saqfish.spdnet.actors.buffs.Blindness;
 import com.saqfish.spdnet.actors.buffs.Buff;
 import com.saqfish.spdnet.actors.buffs.Burning;
+import com.saqfish.spdnet.actors.buffs.ColdDown;
 import com.saqfish.spdnet.actors.buffs.Combo;
 import com.saqfish.spdnet.actors.buffs.Cripple;
 import com.saqfish.spdnet.actors.buffs.Drowsy;
@@ -146,6 +147,7 @@ import com.saqfish.spdnet.windows.WndResurrect;
 import com.saqfish.spdnet.windows.WndTradeItem;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
@@ -1802,14 +1804,21 @@ public class Hero extends Char {
 			Buff.prolong( this, Cripple.class, Cripple.DURATION*200f );
 		}
 		//TODO 大于360血
-		if(HP>360 && HT!=10){
+		if(HP>360 && HT!=10 && this.buff(ColdDown.class) == null){
 			message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"kg4"),
 					"\n\n"+Messages.get(NetWindow.class,"errorkg4"));
+			Music.INSTANCE.volume(10f);
+			Music.INSTANCE.play(Assets.Music.ECHOU, true);
+			Buff.affect( this, ColdDown.class ).set( 6, 1 );
+		}
+
+		if(this.buff(ColdDown.class) != null) {
+			die(true);
 			net().sender().sendChat("\n"+Messages.get(TitleScene.class, "sb3"));
 		}
 
 		//TODO 大于31级或者小于0级或者力量小于0
-		if(lvl >= 31 && HT!=1  || lvl < 0 && HT!=1 || STR < 0 ){
+		if(lvl >= 31 && HT!=1  || lvl < 0 && HT!=1 || STR < 0||STR > 40 ){
 			message(NetIcons.get(NetIcons.ALERT), Messages.get(NetWindow.class,"kg1"),
 					"\n\n"+Messages.get(NetWindow.class,"errorkg1"));
 			HP=HT=1;

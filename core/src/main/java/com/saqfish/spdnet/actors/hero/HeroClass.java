@@ -98,6 +98,7 @@ public enum HeroClass {
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 
+
 		new XieBag().quantity(1).identify().collect();
 		new ReadyGoKet().quantity(1).identify().collect();
 
