@@ -26,7 +26,6 @@ import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.SPDSettings;
 import com.saqfish.spdnet.ShatteredPixelDungeon;
 import com.saqfish.spdnet.custom.TextChallenges;
-import com.saqfish.spdnet.custom.TextField;
 import com.saqfish.spdnet.custom.messages.M;
 import com.saqfish.spdnet.custom.utils.CustomGameSettings;
 import com.saqfish.spdnet.messages.Messages;
@@ -214,6 +213,7 @@ public class WndChallenges extends Window {
 
 		super.onBackPressed();
 	}
+
 	private void updateSeedText(String text, boolean update){
 		if(CustomGameSettings.getSeedString().equals("") && editable){
 			seedButton.text(M.L(TextChallenges.class, "hint"));
