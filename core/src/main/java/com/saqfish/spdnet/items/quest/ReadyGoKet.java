@@ -24,7 +24,7 @@ public class ReadyGoKet extends TestItem {
 
     public static final String AC_PORT = "传送";
     public static final String AC_READ = "read";
-
+    private boolean checkload = false;
     private int returnDepth = 0;
     private int returnPos;
 
@@ -93,7 +93,7 @@ public class ReadyGoKet extends TestItem {
 
         if (action == AC_READ) {
 
-            if (Dungeon.depth != 27) {
+            if (Dungeon.depth != 27 || checkload) {
                 hero.spend(TIME_TO_USE);
                 GLog.w(Messages.get(TitleScene.class,"no_read"));
                 return;
@@ -106,10 +106,11 @@ public class ReadyGoKet extends TestItem {
                     .buff(TimekeepersHourglass.timeFreeze.class);
             if (buff != null)
                 buff.detach();
-                InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+                InterlevelScene.mode = InterlevelScene.Mode.RESET;
             InterlevelScene.returnDepth = returnDepth;
             InterlevelScene.returnPos = returnPos;
             Game.switchScene(InterlevelScene.class);
+            checkload = true;
         }
 
         if (action == AC_PORT) {
@@ -125,8 +126,8 @@ public class ReadyGoKet extends TestItem {
                 InterlevelScene.mode = InterlevelScene.Mode.LETGO;
             } else {
                 InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+                checkload = false;
             }
-
 
             InterlevelScene.returnDepth = returnDepth;
             InterlevelScene.returnPos = returnPos;

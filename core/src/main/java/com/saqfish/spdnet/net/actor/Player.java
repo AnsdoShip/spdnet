@@ -18,6 +18,8 @@
 
 package com.saqfish.spdnet.net.actor;
 
+import static com.saqfish.spdnet.ShatteredPixelDungeon.net;
+
 import com.saqfish.spdnet.Dungeon;
 import com.saqfish.spdnet.actors.mobs.Mob;
 import com.saqfish.spdnet.effects.particles.SmokeParticle;
@@ -151,14 +153,12 @@ public class Player extends Mob {
 
 	public static void addPlayer(String id, String nick, int playerClass, int pos, int depth, Receive.NetItems items){
 		Player p = new Player(id, nick, playerClass, depth, items);
-		p.pos = pos;
+		p.pos = 1;
 		if(Dungeon.level.players != null) {
-			for (Player op : Dungeon.level.players){
-				if(op.socketid().equals(id)) {
-					//p.sprite.destroy();
+				if(!net().connected()) {
+					p.sprite.destroy();
 					p.destroy();
 				}
-			}
 			GameScene.add(p);
 			p.join();
 		}
